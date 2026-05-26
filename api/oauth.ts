@@ -1,6 +1,6 @@
-import instance from "@/lib/axios"; 
+import instance from "@/lib/axios";
 
-interface OauthAppConfig {
+export interface OauthAppConfig {
   appKey: string;
   appSecret?: string;
 }
@@ -11,20 +11,22 @@ export interface RegisterOauthAppsRequest {
   naver?: OauthAppConfig;
 }
 
+export type OauthProvider = "GOOGLE" | "NAVER" | "KAKAO";
+
 export interface OauthAppResponse {
   id: number;
   teamId: string;
-  provider: 'GOOGLE' | 'NAVER' | 'KAKAO';
   appKey: string;
   appSecret: string | null;
   createdAt: string;
   updatedAt: string;
+  provider: OauthProvider;
 }
 
 // POST /oauthApps : 간편 로그인 App 등록/수정 API 함수
 export const registerOauthApps = async (
-  body: RegisterOauthAppsRequest
+  body: RegisterOauthAppsRequest,
 ): Promise<OauthAppResponse[]> => {
-  const response = await instance.post<OauthAppResponse[]>('/oauthApps', body);
+  const response = await instance.post<OauthAppResponse[]>("/oauthApps", body);
   return response.data;
 };
