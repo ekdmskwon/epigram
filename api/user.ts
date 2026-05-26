@@ -10,7 +10,7 @@ export interface UserResponse {
 }
 
 // GET /users/me: 내 정보 조회 API 함수
-export const getUerMe = async (): Promise<UserResponse> => {
+export const getUserMe = async (): Promise<UserResponse> => {
   const response = await instance.get<UserResponse>(`/users/me`);
   return response.data;
 };
@@ -40,7 +40,7 @@ export const updateUserMe = async (
 };
 
 //GET /users/{id}: 특정 유저 정보 조회 API 함수
-export const getUserById = async (id: string): Promise<UserResponse> => {
+export const getUserById = async (id: number): Promise<UserResponse> => {
   const response = await instance.get<UserResponse>(`/users/${id}`);
   return response.data;
 };
@@ -59,10 +59,10 @@ export interface CommentType {
   id: number;
   epigramId: number;
   writer: CommentWriter; // 댓글 작성자 정보
+  /** 
+   * @minLength 1 
+   * */
   content: string;
-  /**
-   * @minLength 1
-   */
 }
 
 export interface CursorBasePaginationResponse {
@@ -78,10 +78,13 @@ export interface GetUserCommentsParams {
 
 export const getUserComments = async (
   id: number,
-  params: GetUserCommentsParams
+  params: GetUserCommentsParams,
 ): Promise<CursorBasePaginationResponse> => {
-  const response = await instance.get<CursorBasePaginationResponse>(`/users/${id}/comments`, {
-    params,
-  });
+  const response = await instance.get<CursorBasePaginationResponse>(
+    `/users/${id}/comments`,
+    {
+      params,
+    },
+  );
   return response.data;
-}
+};
