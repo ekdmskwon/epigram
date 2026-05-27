@@ -21,7 +21,7 @@ export interface UserInfo {
 
 export interface SignUpResponse {
   accessToken: string;
-  refreshToke: string;
+  refreshToken: string;
   user: UserInfo;
 }
 
