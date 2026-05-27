@@ -30,3 +30,36 @@ export const createComment = async (
   );
   return response.data;
 };
+
+// GET 댓글 목록 조회 API
+export interface GetCommentsRequest {
+  limit?: number;
+  cursor?: number;
+}
+
+export type CommentItem = CreateCommentResponse;
+
+export interface GetCommentsResponse {
+  totalCount: number;
+  nextCursor: number | null;
+  list: CommentItem[];
+}
+
+export const getComments = async (
+  teamId: string,
+  params?: GetCommentsRequest,
+): Promise<GetCommentsResponse> => {
+  const response = await instance.get<GetCommentsResponse>(
+    `/${teamId}/comments`,
+    {
+      params,
+    },
+  );
+
+  // 데이터가 안전하게 내려오지 않을 경우 대비
+  return {
+    totalCount: response.data?.totalCount ?? 0,
+    nextCursor: response.data?.nextCursor ?? null,
+    list: response.data?.list || [],
+  };
+};
