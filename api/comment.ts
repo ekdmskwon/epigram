@@ -81,3 +81,18 @@ export const updateComment = async (
   );
   return response.data;
 };
+
+// DELETE 댓글 삭제 API
+export interface DeleteCommentResponse {
+  id: number;
+}
+
+export const deleteComment = async (
+  teamId: string,
+  id: number,
+): Promise<DeleteCommentResponse> => {
+  const response = await instance.delete<DeleteCommentResponse>(
+    `/${teamId}/comments/${id}`,
+  );
+  return response.data;
+};
