@@ -1,26 +1,26 @@
 import instance from "@/lib/axios";
 
-// POST 오늘의 감정 저장 API
 export type EmotionType = "MOVED" | "HAPPY" | "WORRIED" | "SAD" | "ANGRY";
 
-export interface CreateEmotionLogRequest {
-  emotion: EmotionType;
-}
-
-export interface CreateEmotionLogResponse {
+// 공통 감정 로그 인터페이스
+export interface EmotionLog {
   id: number;
   userId: number;
   emotion: EmotionType;
   createdAt: string;
 }
 
+// POST 오늘의 감정 저장 API
+export interface CreateEmotionLogRequest {
+  emotion: EmotionType;
+}
+
+export type CreateEmotionLogResponse = EmotionLog;
+
 export const createTodayEmotionLog = async (
-  body: CreateEmotionLogRequest,
+  body: CreateEmotionLogRequest
 ): Promise<CreateEmotionLogResponse> => {
-  const response = await instance.post<CreateEmotionLogResponse>(
-    "/emotionLogs/today",
-    body,
-  );
+  const response = await instance.post<CreateEmotionLogResponse>('/emotionLogs/today', body);
   return response.data;
 };
 
@@ -29,22 +29,14 @@ export interface GetTodayEmotionLogRequest {
   userId: number;
 }
 
-export interface GetTodayEmotionLogResponse {
-  id: number;
-  userId: number;
-  emotion: EmotionType;
-  createdAt: string;
-}
+export type GetTodayEmotionLogResponse = EmotionLog;
 
 export const getTodayEmotionLog = async (
-  params: GetTodayEmotionLogRequest,
+  params: GetTodayEmotionLogRequest
 ): Promise<GetTodayEmotionLogResponse | null> => {
-  const response = await instance.get<GetTodayEmotionLogResponse | null>(
-    "/emotionLogs/today",
-    {
-      params,
-    },
-  );
+  const response = await instance.get<GetTodayEmotionLogResponse | null>('/emotionLogs/today', {
+    params,
+  });
   return response.data;
 };
 
@@ -55,18 +47,13 @@ export interface GetMonthlyEmotionLogsRequest {
   month: number;
 }
 
-export interface MonthlyEmotionLogItem {
-  id: number;
-  userId: number;
-  emotion: EmotionType;
-  createdAt: string;
-}
+export type MonthlyEmotionLogItem = EmotionLog;
 
 export const getMonthlyEmotionLogs = async (
-  params: GetMonthlyEmotionLogsRequest
+  params: GetMonthlyEmotionLogsRequest,
 ): Promise<MonthlyEmotionLogItem[]> => {
-  const response = await instance.get<MonthlyEmotionLogItem[]>('/emotionLogs/monthly', {
+  const response = await instance.get<MonthlyEmotionLogItem[]>("/emotionLogs/monthly", {
     params,
   });
-  return response.data;
+  return response.data || [];
 };
