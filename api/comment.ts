@@ -1,12 +1,7 @@
 import instance from "@/lib/axios";
 
-// POST 댓글 작성 API
-export interface CreateCommentRequest {
-  content: string;
-  isPrivate?: boolean;
-}
-
-export interface CreateCommentResponse {
+// 댓글 작성 응답 및 공통 댓글 아이템 인터페이스
+export interface CommentItem {
   id: number;
   content: string;
   isPrivate: boolean;
@@ -20,24 +15,28 @@ export interface CreateCommentResponse {
   };
 }
 
+// 1. POST 댓글 작성 API
+export interface CreateCommentRequest {
+  content: string;
+  isPrivate?: boolean;
+}
+
 export const createComment = async (
   epigramId: number,
   body: CreateCommentRequest,
-): Promise<CreateCommentResponse> => {
-  const response = await instance.post<CreateCommentResponse>(
+): Promise<CommentItem> => {
+  const response = await instance.post<CommentItem>(
     `/epigrams/${epigramId}/comments`,
     body,
   );
   return response.data;
 };
 
-// GET 댓글 목록 조회 API
+// 2. GET 댓글 목록 조회 API
 export interface GetCommentsRequest {
   limit?: number;
   cursor?: number;
 }
-
-export type CommentItem = CreateCommentResponse;
 
 export interface GetCommentsResponse {
   totalCount: number;
@@ -46,17 +45,14 @@ export interface GetCommentsResponse {
 }
 
 export const getComments = async (
-  teamId: string,
+  epigramId: number,
   params?: GetCommentsRequest,
 ): Promise<GetCommentsResponse> => {
   const response = await instance.get<GetCommentsResponse>(
-    `/${teamId}/comments`,
-    {
-      params,
-    },
+    `/epigrams/${epigramId}/comments`,
+    { params },
   );
-
-  // 데이터가 안전하게 내려오지 않을 경우 대비
+  
   return {
     totalCount: response.data?.totalCount ?? 0,
     nextCursor: response.data?.nextCursor ?? null,
@@ -64,35 +60,33 @@ export const getComments = async (
   };
 };
 
-// PATCH 댓글 수정 API
+// 3. PATCH 댓글 수정 API
 export interface UpdateCommentRequest {
   content: string;
   isPrivate?: boolean;
 }
 
 export const updateComment = async (
-  teamId: string,
   id: number,
   body: UpdateCommentRequest,
 ): Promise<CommentItem> => {
   const response = await instance.patch<CommentItem>(
-    `/${teamId}/comments/${id}`,
+    `/comments/${id}`,
     body,
   );
   return response.data;
 };
 
-// DELETE 댓글 삭제 API
+// 4. DELETE 댓글 삭제 API
 export interface DeleteCommentResponse {
   id: number;
 }
 
 export const deleteComment = async (
-  teamId: string,
   id: number,
 ): Promise<DeleteCommentResponse> => {
   const response = await instance.delete<DeleteCommentResponse>(
-    `/${teamId}/comments/${id}`,
+    `/comments/${id}`,
   );
   return response.data;
 };
