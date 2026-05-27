@@ -9,7 +9,7 @@ export interface CreateEpigramRequest {
   tags?: string[];
 }
 
-export interface EpigramResponse {
+export interface Epigram {
   id: number;
   content: string;
   author: string;
@@ -20,13 +20,14 @@ export interface EpigramResponse {
   likeCount: number;
 }
 
+export type EpigramResponse = Epigram;
+
 export const createEpigram = async (
-  body: CreateEpigramRequest
+  body: CreateEpigramRequest,
 ): Promise<EpigramResponse> => {
-  const response = await instance.post<EpigramResponse>('/epigrams', body);
+  const response = await instance.post<EpigramResponse>("/epigrams", body);
   return response.data;
 };
-
 
 // GET 에피그램 목록 조회 API
 export interface GetEpigramsRequest {
@@ -36,65 +37,38 @@ export interface GetEpigramsRequest {
   writerId?: number;
 }
 
-export interface EpigramListItem {
-  id: number;
-  content: string;
-  author: string;
-  referenceTitle: string | null;
-  referenceUrl: string | null;
-  writerId: number;
-  tags: { id: number; name: string }[];
-  likeCount: number;
-}
-
 export interface GetEpigramsResponse {
   totalCount: number;
   nextCursor: number | null;
-  list: EpigramListItem[];
+  list: Epigram[];
 }
 
 export const getEpigrams = async (
-  params?: GetEpigramsRequest
+  params?: GetEpigramsRequest,
 ): Promise<GetEpigramsResponse> => {
-  const response = await instance.get<GetEpigramsResponse>('/epigrams', {
+  const response = await instance.get<GetEpigramsResponse>("/epigrams", {
     params,
   });
   return response.data;
 };
 
 // GET 오늘의 에피그램 조회 API
-export interface TodayEpigramResponse {
-  id: number;
-  content: string;
-  author: string;
-  referenceTitle: string | null;
-  referenceUrl: string | null;
-  writerId: number;
-  tags: { id: number; name: string }[];
-  likeCount: number;
+export interface TodayEpigramResponse extends Epigram {
   isLiked: boolean | null;
 }
 
 export const getTodayEpigram = async (): Promise<TodayEpigramResponse> => {
-  const response = await instance.get<TodayEpigramResponse>('/epigrams/today');
+  const response = await instance.get<TodayEpigramResponse>("/epigrams/today");
   return response.data;
 };
 
 // GET 에피그램 상세 조회
-export interface EpigramDetailResponse {
-  id: number;
-  content: string;
-  author: string;
-  referenceTitle: string | null;
-  referenceUrl: string | null;
-  writerId: number;
-  tags: { id: number; name: string }[];
-  likeCount: number;
+export interface EpigramDetailResponse extends Epigram {
   isLiked: boolean;
 }
 
 export const getEpigramDetail = async (
-  id: number
+  id: number,
 ): Promise<EpigramDetailResponse> => {
   const response = await instance.get<EpigramDetailResponse>(`/epigrams/${id}`);
   return response.data;
@@ -109,19 +83,14 @@ export interface UpdateEpigramRequest {
   tags?: string[];
 }
 
-export interface UpdateEpigramResponse {
-  content: string;
-  author: string;
-  referenceTitle: string | null;
-  referenceUrl: string | null;
-  tags: string[];
-}
-
 export const updateEpigram = async (
   id: number,
-  body: UpdateEpigramRequest
-): Promise<UpdateEpigramResponse> => {
-  const response = await instance.patch<UpdateEpigramResponse>(`/epigrams/${id}`, body);
+  body: UpdateEpigramRequest,
+): Promise<EpigramResponse> => {
+  const response = await instance.patch<EpigramResponse>(
+    `/epigrams/${id}`,
+    body,
+  );
   return response.data;
 };
 
@@ -131,49 +100,31 @@ export interface DeleteEpigramResponse {
 }
 
 export const deleteEpigram = async (
-  id: number
+  id: number,
 ): Promise<DeleteEpigramResponse> => {
-  const response = await instance.delete<DeleteEpigramResponse>(`/epigrams/${id}`);
+  const response = await instance.delete<DeleteEpigramResponse>(
+    `/epigrams/${id}`,
+  );
   return response.data;
 };
 
 // POST 에피그램 좋아요 API
-export interface ToggleLikeResponse {
-  id: number;
-  content: string;
-  author: string;
-  referenceTitle: string | null;
-  referenceUrl: string | null;
-  writerId: number;
-  tags: { id: number; name: string }[];
-  likeCount: number;
-  isLiked: boolean;
-}
-
 export const toggleEpigramLike = async (
-  id: number
-): Promise<ToggleLikeResponse> => {
-  const response = await instance.post<ToggleLikeResponse>(`/epigrams/${id}/like`);
+  id: number,
+): Promise<EpigramDetailResponse> => {
+  const response = await instance.post<EpigramDetailResponse>(
+    `/epigrams/${id}/like`,
+  );
   return response.data;
 };
 
 // DELETE 에피그램 좋아요 취소 API
-export interface ToggleCancelLikeResponse {
-  id: number;
-  content: string;
-  author: string;
-  referenceTitle: string | null;
-  referenceUrl: string | null;
-  writerId: number;
-  tags: { id: number; name: string }[];
-  likeCount: number;
-  isLiked: boolean;
-}
-
 export const cancelEpigramLike = async (
-  id: number
-): Promise<ToggleCancelLikeResponse> => {
-  const response = await instance.delete<ToggleCancelLikeResponse>(`/epigrams/${id}/like`);
+  id: number,
+): Promise<EpigramDetailResponse> => {
+  const response = await instance.delete<EpigramDetailResponse>(
+    `/epigrams/${id}/like`,
+  );
   return response.data;
 };
 
@@ -207,10 +158,13 @@ export interface GetCommentsResponse {
 
 export const getComments = async (
   epigramId: number,
-  params?: GetCommentsRequest
+  params?: GetCommentsRequest,
 ): Promise<GetCommentsResponse> => {
-  const response = await instance.get<GetCommentsResponse>(`/epigrams/${epigramId}/comments`, {
-    params,
-  });
+  const response = await instance.get<GetCommentsResponse>(
+    `/epigrams/${epigramId}/comments`,
+    {
+      params,
+    },
+  );
   return response.data;
 };
