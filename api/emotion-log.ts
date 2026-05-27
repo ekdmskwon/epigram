@@ -18,9 +18,12 @@ export interface CreateEmotionLogRequest {
 export type CreateEmotionLogResponse = EmotionLog;
 
 export const createTodayEmotionLog = async (
-  body: CreateEmotionLogRequest
+  body: CreateEmotionLogRequest,
 ): Promise<CreateEmotionLogResponse> => {
-  const response = await instance.post<CreateEmotionLogResponse>('/emotionLogs/today', body);
+  const response = await instance.post<CreateEmotionLogResponse>(
+    "/emotionLogs/today",
+    body,
+  );
   return response.data;
 };
 
@@ -32,12 +35,15 @@ export interface GetTodayEmotionLogRequest {
 export type GetTodayEmotionLogResponse = EmotionLog;
 
 export const getTodayEmotionLog = async (
-  params: GetTodayEmotionLogRequest
+  params: GetTodayEmotionLogRequest,
 ): Promise<GetTodayEmotionLogResponse | null> => {
-  const response = await instance.get<GetTodayEmotionLogResponse | null>('/emotionLogs/today', {
-    params,
-  });
-  return response.data;
+  const response = await instance.get<GetTodayEmotionLogResponse | null>(
+    "/emotionLogs/today",
+    {
+      params,
+    },
+  );
+  return response.data ?? null;
 };
 
 // GET 월별 감정 조회 API
@@ -52,8 +58,11 @@ export type MonthlyEmotionLogItem = EmotionLog;
 export const getMonthlyEmotionLogs = async (
   params: GetMonthlyEmotionLogsRequest,
 ): Promise<MonthlyEmotionLogItem[]> => {
-  const response = await instance.get<MonthlyEmotionLogItem[]>("/emotionLogs/monthly", {
-    params,
-  });
+  const response = await instance.get<MonthlyEmotionLogItem[]>(
+    "/emotionLogs/monthly",
+    {
+      params,
+    },
+  );
   return response.data || [];
 };
