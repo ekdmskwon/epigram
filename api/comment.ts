@@ -63,3 +63,21 @@ export const getComments = async (
     list: response.data?.list || [],
   };
 };
+
+// PATCH 댓글 수정 API
+export interface UpdateCommentRequest {
+  content: string;
+  isPrivate?: boolean;
+}
+
+export const updateComment = async (
+  teamId: string,
+  id: number,
+  body: UpdateCommentRequest,
+): Promise<CommentItem> => {
+  const response = await instance.patch<CommentItem>(
+    `/${teamId}/comments/${id}`,
+    body,
+  );
+  return response.data;
+};
