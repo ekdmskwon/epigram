@@ -47,3 +47,26 @@ export const getTodayEmotionLog = async (
   );
   return response.data;
 };
+
+// GET 월별 감정 조회 API
+export interface GetMonthlyEmotionLogsRequest {
+  userId: number;
+  year: number;
+  month: number;
+}
+
+export interface MonthlyEmotionLogItem {
+  id: number;
+  userId: number;
+  emotion: EmotionType;
+  createdAt: string;
+}
+
+export const getMonthlyEmotionLogs = async (
+  params: GetMonthlyEmotionLogsRequest
+): Promise<MonthlyEmotionLogItem[]> => {
+  const response = await instance.get<MonthlyEmotionLogItem[]>('/emotionLogs/monthly', {
+    params,
+  });
+  return response.data;
+};
