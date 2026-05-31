@@ -14,7 +14,6 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const defaultSize = size || (variant === "wide" ? "xl" : "md");
-
   const defaultShape =
     shape || (bgType === "outline" || icon ? "pill" : "round");
 
@@ -26,6 +25,7 @@ export const Button = ({
       size={defaultSize}
       iconPosition={iconPosition}
       disabled={disabled}
+      $hasIcon={!!icon}
       {...props}
     >
       {icon && <span className="button-icon">{icon}</span>}

@@ -1,8 +1,7 @@
-// src/components/button/style.ts
 import styled from "styled-components";
 import { ButtonProps } from "./type";
 
-export const StyledButton = styled.button<ButtonProps>`
+export const StyledButton = styled.button<ButtonProps & { $hasIcon: boolean }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -27,44 +26,33 @@ export const StyledButton = styled.button<ButtonProps>`
       width: 100%;
     `}
 
-  ${({ size, theme, bgType, icon }) => {
-    // 1) 기능형 버튼
-    if (bgType === "outline" || icon) {
+  ${({ size, theme, bgType, $hasIcon }) => {
+    // 1) 기능형 버튼 스타일
+    if (bgType === "outline" || $hasIcon) {
       switch (size) {
         case "xs":
-          return `
-            height: 32px;
-            padding: 0 8px; 
-            font-size: ${theme.fontSizes.main.textXs.size};
-          `;
+          return `height: 32px; padding: 0 8px; font-size: ${theme.fontSizes.main.textXs.size};`;
         case "sm":
-          return `
-            height: 44px;
-            padding: 0 10px;
-            font-size: ${theme.fontSizes.main.textSm.size};
-          `;
-        case "md":
-          return `
-            height: 48px;
-            padding: 0 12px; 
-            font-size: ${theme.fontSizes.main.textMd.size};
-          `;
+          return `height: 44px; padding: 0 10px; font-size: ${theme.fontSizes.main.textSm.size};`;
         case "md-2":
-          return `
-            height: 56px;
-            padding: 0 20px; 
-            font-size: ${theme.fontSizes.main.text2lg.size};
-          `;
+          return `height: 56px; padding: 0 20px; font-size: ${theme.fontSizes.main.text2lg.size};`;
         case "lg":
-          return `
-            height: 64px;
-            padding: 0 24px;
-            font-size: ${theme.fontSizes.main.text2xl.size};
-          `;
+          return `height: 64px; padding: 0 24px; font-size: ${theme.fontSizes.main.text2xl.size};`;
+
+        case "xl":
+          return `height: 44px; padding: 0 16px; font-size: ${theme.fontSizes.main.textSm.size};`;
+        case "2xl":
+          return `height: 44px; padding: 0 16px; font-size: ${theme.fontSizes.main.textMd.size};`;
+        case "3xl":
+          return `height: 64px; padding: 0 24px; font-size: ${theme.fontSizes.main.text2xl.size};`;
+
+        case "md":
+        default:
+          return `height: 48px; padding: 0 12px; font-size: ${theme.fontSizes.main.textMd.size};`;
       }
     }
 
-    // 2) 일반 기본형 버튼
+    // 2) 일반 기본형 버튼 스타일
     switch (size) {
       case "xs":
         return `height: 32px; padding: 0 12px; font-size: ${theme.fontSizes.main.textXs.size};`;
@@ -74,6 +62,14 @@ export const StyledButton = styled.button<ButtonProps>`
         return `height: 56px; padding: 0 24px; font-size: ${theme.fontSizes.main.text2lg.size};`;
       case "lg":
         return `height: 64px; padding: 0 32px; font-size: ${theme.fontSizes.main.text2xl.size};`;
+
+      case "xl":
+        return `height: 44px; padding: 0 24px; font-size: ${theme.fontSizes.main.textSm.size};`;
+      case "2xl":
+        return `height: 44px; padding: 0 32px; font-size: ${theme.fontSizes.main.textMd.size};`;
+      case "3xl":
+        return `height: 64px; padding: 0 48px; font-size: ${theme.fontSizes.main.text2xl.size};`;
+
       case "md":
       default:
         return `height: 48px; padding: 0 20px; font-size: ${theme.fontSizes.main.textMd.size};`;
@@ -84,7 +80,7 @@ export const StyledButton = styled.button<ButtonProps>`
   ${({ bgType, theme }) =>
     bgType === "outline"
       ? `
-          background-color: #ffffff; /* 피그마처럼 깔끔한 흰색 배경 */
+          background-color: #ffffff; 
           border: 1px solid ${theme.colors.line200};
           color: ${theme.colors.black600};
           &:hover:not(:disabled) { background-color: ${theme.colors.line100}; }
