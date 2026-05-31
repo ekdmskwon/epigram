@@ -6,7 +6,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
   bgType?: "fill" | "outline";
 
-  // radius 옵션
+  // 기본 버튼과 아이콘 버튼 모양 구분
   shape?: "round" | "pill";
 
   // 버튼 크기
