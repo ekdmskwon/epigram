@@ -1,11 +1,8 @@
 import localFont from "next/font/local";
-import StyledComponentsRegistry from "@/lib/registry";
-import { ThemeProvider } from "styled-components";
-import { theme } from "@/styles/theme";
-import { GlobalStyle } from "@/styles/GlobalStyle";
+import ClientProvider from "@/components/Provider";
 
 const iropkeBatang = localFont({
-  src: "./fonts/IropkeBatangM.woff2",
+  src: "./fonts/IropkeBatangM.woff",
   variable: "--font-iropke",
   display: "swap",
 });
@@ -17,14 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <head></head>
+      <head />
       <body className={iropkeBatang.variable}>
-        <StyledComponentsRegistry>
-          <ThemeProvider theme={theme}>
-            <GlobalStyle />
-            {children}
-          </ThemeProvider>
-        </StyledComponentsRegistry>
+        <ClientProvider>{children}</ClientProvider>
       </body>
     </html>
   );
