@@ -14,7 +14,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <head />
       <body className={iropkeBatang.variable}>
         <ClientProvider>{children}</ClientProvider>
       </body>
