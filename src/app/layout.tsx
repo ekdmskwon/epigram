@@ -1,8 +1,14 @@
-"use client";
-
+import localFont from "next/font/local";
+import StyledComponentsRegistry from "@/lib/registry";
 import { ThemeProvider } from "styled-components";
 import { theme } from "@/styles/theme";
 import { GlobalStyle } from "@/styles/GlobalStyle";
+
+const iropkeBatang = localFont({
+  src: "./fonts/IropkeBatangM.woff2",
+  variable: "--font-iropke",
+  display: "swap",
+});
 
 export default function RootLayout({
   children,
@@ -11,17 +17,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <head>
-        <link 
-          rel="stylesheet" 
-          href="https://cdn.jsdelivr.net/font-iropke-batang/1.2/font-iropke-batang.css" 
-        />
-      </head>
-      <body>
-        <ThemeProvider theme={theme}>
-          <GlobalStyle />
-          {children}
-        </ThemeProvider>
+      <head></head>
+      <body className={iropkeBatang.variable}>
+        <StyledComponentsRegistry>
+          <ThemeProvider theme={theme}>
+            <GlobalStyle />
+            {children}
+          </ThemeProvider>
+        </StyledComponentsRegistry>
       </body>
     </html>
   );
