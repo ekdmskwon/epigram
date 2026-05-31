@@ -45,7 +45,10 @@ export const InputContainer = styled.div<{
   }
 `;
 
-export const BaseInput = styled.input<{ $size: "normal" | "large" }>`
+export const BaseInput = styled.input<{
+  $size: "normal" | "large";
+  $hasError: boolean;
+}>`
   width: 100%;
   height: 100%;
   font-family: ${({ theme }) => theme.fonts.main};
@@ -56,11 +59,8 @@ export const BaseInput = styled.input<{ $size: "normal" | "large" }>`
       : theme.fontSizes.main.textMd.size};
   color: ${({ theme }) => theme.colors.black950};
 
-  caret-color: ${({ theme }) => theme.colors.blue500};
-
-  div[data-error="true"] & {
-    caret-color: ${({ theme }) => theme.colors.state};
-  }
+  caret-color: ${({ theme, $hasError }) =>
+    $hasError ? theme.colors.state : theme.colors.blue500};
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.black300};
