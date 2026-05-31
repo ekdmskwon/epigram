@@ -7,9 +7,35 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
   }
 
+  html,
   body {
-    font-family: var(--font-iropke), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    background-color: ${({ theme }) => theme.colors.background};
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background-color: #ffffff;
     color: ${({ theme }) => theme.colors.black950};
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button, input, textarea, select {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    border: none;
+    background: none;
+    outline: none;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  input:focus, textarea:focus {
+    outline: none;
   }
 `;
