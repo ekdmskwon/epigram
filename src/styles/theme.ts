@@ -62,7 +62,7 @@ export const theme: DefaultTheme = {
   // 폰트 종류
   fonts: {
     main: "'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
-    point: "'Iropke Batang', Georgia, serif",
+    point: "var(--font-iropke), Georgia, serif",
   },
 
   // 타이포그래피 시스템
