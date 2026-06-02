@@ -29,7 +29,6 @@ export const CenteredContainer = styled.div`
   max-width: 1200px;
   height: 100%;
   margin: 0 auto;
-  padding: 0 120px;
 `;
 
 export const LeftSection = styled.div`
@@ -39,10 +38,7 @@ export const LeftSection = styled.div`
 `;
 
 export const Logo = styled.span`
-  font-size: 20px;
-  font-weight: 700;
   cursor: pointer;
-  color: ${({ theme }) => theme.colors.black950 || "#000000"};
 `;
 
 export const MenuLinks = styled.div`

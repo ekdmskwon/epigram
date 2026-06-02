@@ -3,7 +3,7 @@ import Image from "next/image";
 import whiteLogoImg from "../../../public/icons/white-logo.svg";
 import * as S from "./style";
 
-const GuestNavbar = () => {
+const GuestHeader = () => {
   return (
     <S.HeaderBase>
       <S.InnerContainer>
@@ -25,4 +25,4 @@ const GuestNavbar = () => {
   );
 };
 
-export default GuestNavbar;
+export default GuestHeader;

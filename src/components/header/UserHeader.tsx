@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import whiteLogoImg from "../../../public/icons/white-logo.svg";
-import defaultAvatarImg from "../../../public/icons/default-avater.svg";
+import defaultAvatarImg from "../../../public/icons/default-avatar.svg";
 import { UserHeaderProps } from "./type";
 import * as S from "./style";
 
@@ -12,12 +12,12 @@ const UserHeader = ({ userName, profileImageUrl }: UserHeaderProps) => {
         <S.LeftSection>
           <Link href="/">
             <S.Logo>
-              <Image 
-                src={whiteLogoImg} 
-                alt="Epigram 로고" 
-                width={133} 
-                height={36} 
-                priority 
+              <Image
+                src={whiteLogoImg}
+                alt="Epigram 로고"
+                width={131}
+                height={36}
+                priority
               />
             </S.Logo>
           </Link>
@@ -32,8 +32,10 @@ const UserHeader = ({ userName, profileImageUrl }: UserHeaderProps) => {
             {profileImageUrl ? (
               <S.ProfileImageWrapper>
                 <Image
-                  src={profileImageUrl}
-                  alt={`${userName}님의 프로필`}
+                  src={profileImageUrl || defaultAvatarImg}
+                  alt={
+                    profileImageUrl ? `${userName}님의 프로필` : "기본 아바타"
+                  }
                   fill
                   style={{ objectFit: "cover" }}
                 />
