@@ -10,7 +10,7 @@ import { Button } from "@/components/button";
 import { signUp } from "@/api/auth";
 import { setTokens } from "@/lib/auth-token";
 import {
-  extractSignUpApiMessage,
+  getSignUpSubmitErrorMessage,
   hasFieldErrors,
   isSignUpFormReady,
   parseSignUpApiError,
@@ -23,10 +23,18 @@ import * as S from "./styled";
 
 const SIGNUP_FIELDS: SignUpField[] = [
   "email",
-  "nickname",
   "password",
   "passwordConfirmation",
+  "nickname",
 ];
+
+const ALL_SIGNUP_FIELDS_TOUCHED = SIGNUP_FIELDS.reduce(
+  (acc, field) => {
+    acc[field] = true;
+    return acc;
+  },
+  {} as Record<SignUpField, boolean>,
+);
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -80,11 +88,7 @@ export default function SignUpPage() {
     e.preventDefault();
     setSubmitError("");
 
-    const allTouched = SIGNUP_FIELDS.reduce(
-      (acc, field) => ({ ...acc, [field]: true }),
-      {} as Record<SignUpField, boolean>,
-    );
-    setTouched(allTouched);
+    setTouched(ALL_SIGNUP_FIELDS_TOUCHED);
 
     const errors = validateSignUpForm(formValues);
     if (hasFieldErrors(errors)) {
@@ -121,14 +125,16 @@ export default function SignUpPage() {
 
         if (hasFieldErrors(apiFieldErrors)) {
           setFieldErrors(apiFieldErrors);
-          setTouched(allTouched);
+          setTouched(ALL_SIGNUP_FIELDS_TOUCHED);
           setSubmitError("");
           return;
         }
 
         setSubmitError(
-          extractSignUpApiMessage(error.response.data) ??
-            `회원가입에 실패했습니다. (오류 코드: ${error.response.status})`,
+          getSignUpSubmitErrorMessage(
+            error.response.data,
+            error.response.status,
+          ),
         );
       } else {
         setSubmitError(
@@ -173,22 +179,6 @@ export default function SignUpPage() {
           />
 
           <Input
-            label="닉네임"
-            type="text"
-            placeholder="닉네임"
-            $size="lg"
-            autoComplete="nickname"
-            value={nickname}
-            errorMessage={getDisplayError("nickname")}
-            onBlur={() => handleFieldBlur("nickname")}
-            onChange={(e) => {
-              setNickname(e.target.value);
-              clearFieldError("nickname");
-              setSubmitError("");
-            }}
-          />
-
-          <Input
             label="비밀번호"
             type="password"
             placeholder="비밀번호"
@@ -214,6 +204,22 @@ export default function SignUpPage() {
             onChange={(e) => {
               setPasswordConfirmation(e.target.value);
               clearFieldError("passwordConfirmation");
+            }}
+          />
+
+          <Input
+            label="닉네임"
+            type="text"
+            placeholder="닉네임"
+            $size="lg"
+            autoComplete="nickname"
+            value={nickname}
+            errorMessage={getDisplayError("nickname")}
+            onBlur={() => handleFieldBlur("nickname")}
+            onChange={(e) => {
+              setNickname(e.target.value);
+              clearFieldError("nickname");
+              setSubmitError("");
             }}
           />
         </S.FormFields>

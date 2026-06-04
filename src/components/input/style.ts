@@ -53,12 +53,16 @@ export const InputContainer = styled.div<{
   }
 `;
 
-export const BaseInput = styled.input<{ $hasError?: boolean }>`
+export const BaseInput = styled.input<{
+  $hasError?: boolean;
+  $isPassword?: boolean;
+}>`
   width: 100%;
   height: 100%;
   border: none;
   border-radius: 12px;
-  padding: 0 48px 0 16px;
+  padding: ${({ $isPassword }) =>
+    $isPassword ? "0 48px 0 16px" : "0 16px"};
   background-color: transparent;
   color: ${({ theme }) => theme.colors.black950};
   font-size: 16px;

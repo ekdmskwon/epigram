@@ -12,14 +12,16 @@ interface StyledButtonProps {
 const fillButtonStyles = css`
   background-color: ${({ theme }) => theme.colors.buttonFillDefault};
   border: none;
-  color: ${({ theme }) => theme.colors.buttonFillDisabledText};
+  color: ${({ theme }) => theme.colors.buttonFillDefaultText};
 
   &:hover:not(:disabled) {
     background-color: ${({ theme }) => theme.colors.buttonFillHover};
+    color: ${({ theme }) => theme.colors.buttonFillDefaultText};
   }
 
   &:active:not(:disabled) {
     background-color: ${({ theme }) => theme.colors.buttonFillActive};
+    color: ${({ theme }) => theme.colors.buttonFillDefaultText};
     transform: scale(0.98);
   }
 

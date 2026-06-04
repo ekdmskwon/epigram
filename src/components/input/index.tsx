@@ -36,6 +36,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             type={currentType}
             disabled={disabled}
             $hasError={hasError}
+            $isPassword={isPasswordType}
             aria-invalid={hasError}
             aria-describedby={
               hasError

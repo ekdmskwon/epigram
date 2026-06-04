@@ -10,6 +10,7 @@ export const SIGNUP_ERROR_MESSAGES = {
   passwordCharset: "비밀번호는 숫자, 영문, 특수문자로만 가능합니다.",
   passwordConfirmRequired: "비밀번호 확인을 입력해주세요.",
   passwordMismatch: "비밀번호가 일치하지 않습니다.",
+  serverError: "서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
 } as const;
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -158,9 +159,48 @@ function isNicknameConflictMessage(text: string): boolean {
   return (
     text.includes(SIGNUP_ERROR_MESSAGES.nicknameExists) ||
     text.includes("이미 사용중인 닉네임") ||
+    text.includes("이미 존재하는 닉네임") ||
     (includesAny(text, ["nickname", "닉네임"]) &&
-      includesAny(text, ["이미", "중복", "사용중", "exist", "duplicate"]))
+      includesAny(text, ["이미", "중복", "사용중", "exist", "duplicate", "conflict"]))
   );
+}
+
+/** 4xx 등 클라이언트 오류에서만 필드 매핑 (5xx는 서버 오류로 처리) */
+function canMapFieldErrorsFromApi(status?: number): boolean {
+  if (status === undefined) return true;
+  return status >= 400 && status < 500;
+}
+
+function applyDetailFieldErrors(
+  body: ApiErrorBody,
+  errors: SignUpFieldErrors,
+  status?: number,
+): void {
+  if (!canMapFieldErrorsFromApi(status) || !body.details) return;
+
+  const { details } = body;
+
+  const emailDetail = details.email;
+  if (emailDetail) {
+    const text =
+      typeof emailDetail === "string"
+        ? emailDetail
+        : (emailDetail as ApiDetailItem).message ?? "";
+    if (isEmailConflictMessage(text)) {
+      errors.email = SIGNUP_ERROR_MESSAGES.emailExists;
+    }
+  }
+
+  const nicknameDetail = details.nickname;
+  if (nicknameDetail) {
+    const text =
+      typeof nicknameDetail === "string"
+        ? nicknameDetail
+        : (nicknameDetail as ApiDetailItem).message ?? "";
+    if (isNicknameConflictMessage(text)) {
+      errors.nickname = SIGNUP_ERROR_MESSAGES.nicknameExists;
+    }
+  }
 }
 
 export function extractSignUpApiMessage(data: unknown): string | undefined {
@@ -169,13 +209,27 @@ export function extractSignUpApiMessage(data: unknown): string | undefined {
   return typeof message === "string" && message.trim() ? message : undefined;
 }
 
-export function isLikelyNicknameDuplicateApiError(
-  status: number,
+export function getSignUpSubmitErrorMessage(
   data: unknown,
-): boolean {
-  if (status !== 500) return false;
-  const message = extractSignUpApiMessage(data)?.toLowerCase() ?? "";
-  return message.includes("internal server error");
+  status?: number,
+): string {
+  if (status !== undefined && status >= 500) {
+    return SIGNUP_ERROR_MESSAGES.serverError;
+  }
+
+  const apiMessage = extractSignUpApiMessage(data);
+  if (
+    apiMessage &&
+    !apiMessage.toLowerCase().includes("internal server error")
+  ) {
+    return apiMessage;
+  }
+
+  if (status !== undefined) {
+    return `회원가입에 실패했습니다. (오류 코드: ${status})`;
+  }
+
+  return "회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.";
 }
 
 export function parseSignUpApiError(
@@ -183,23 +237,28 @@ export function parseSignUpApiError(
   status?: number,
 ): SignUpFieldErrors {
   const errors: SignUpFieldErrors = {};
+  if (!canMapFieldErrorsFromApi(status)) {
+    return errors;
+  }
+
+  const body =
+    data && typeof data === "object" ? (data as ApiErrorBody) : undefined;
   const combined = collectErrorTexts(data).join(" ");
 
   if (isEmailConflictMessage(combined)) {
     errors.email = SIGNUP_ERROR_MESSAGES.emailExists;
   }
+
   if (isNicknameConflictMessage(combined)) {
     errors.nickname = SIGNUP_ERROR_MESSAGES.nicknameExists;
   }
+
   if (includesAny(combined, ["일치하지 않", "password mismatch"])) {
     errors.passwordConfirmation = SIGNUP_ERROR_MESSAGES.passwordMismatch;
   }
-  if (
-    !errors.nickname &&
-    status &&
-    isLikelyNicknameDuplicateApiError(status, data)
-  ) {
-    errors.nickname = SIGNUP_ERROR_MESSAGES.nicknameExists;
+
+  if (body) {
+    applyDetailFieldErrors(body, errors, status);
   }
 
   return errors;
