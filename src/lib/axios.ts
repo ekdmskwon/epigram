@@ -1,17 +1,20 @@
 import axios from "axios";
+import { getAccessToken } from "@/lib/auth-token";
 
-// 1. axios 인스턴스 생성
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  timeout: 5000, // 5초 동안 응답이 없으면 요청 취소
+  timeout: 5000,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// 2. 요청(Request) 인터셉터 설정
 instance.interceptors.request.use(
   (config) => {
+    const token = getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {

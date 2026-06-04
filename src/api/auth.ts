@@ -1,7 +1,8 @@
 import instance from "@/lib/axios";
-import { OauthProvider } from "./oauth";
+import type { User } from "@/types/user";
 
-// 회원가입 API
+export type { User };
+
 export interface SignUpRequest {
   email: string;
   nickname: string;
@@ -9,20 +10,10 @@ export interface SignUpRequest {
   passwordConfirmation: string;
 }
 
-export interface UserInfo {
-  id: number;
-  email: string;
-  nickname: string;
-  teamId: string;
-  image: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface SignUpResponse {
   accessToken: string;
   refreshToken: string;
-  user: UserInfo;
+  user: User;
 }
 
 export const signUp = async (body: SignUpRequest): Promise<SignUpResponse> => {
@@ -30,7 +21,6 @@ export const signUp = async (body: SignUpRequest): Promise<SignUpResponse> => {
   return response.data;
 };
 
-// 로그인 API
 export interface SignInRequest {
   email: string;
   password: string;
@@ -39,7 +29,7 @@ export interface SignInRequest {
 export interface SignInResponse {
   accessToken: string;
   refreshToken: string;
-  user: UserInfo;
+  user: User;
 }
 
 export const signIn = async (body: SignInRequest): Promise<SignInResponse> => {
@@ -47,7 +37,6 @@ export const signIn = async (body: SignInRequest): Promise<SignInResponse> => {
   return response.data;
 };
 
-// 토큰 갱신 API
 export interface RefreshTokenRequest {
   refreshToken: string;
 }
@@ -61,23 +50,6 @@ export const refreshAccessToken = async (
 ): Promise<RefreshTokenResponse> => {
   const response = await instance.post<RefreshTokenResponse>(
     `/auth/refresh-token`,
-    body,
-  );
-  return response.data;
-};
-
-// OAuth 간편 로그인 전용 API
-export interface OauthSignInRequest {
-  state?: string;
-  redirectUri: string;
-}
-
-export const oauthSignIn = async (
-  provider: OauthProvider,
-  body: OauthSignInRequest,
-): Promise<SignInResponse> => {
-  const response = await instance.post<SignInResponse>(
-    `/auth/signIn/${provider}`,
     body,
   );
   return response.data;
