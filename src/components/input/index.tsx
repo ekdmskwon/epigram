@@ -10,11 +10,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const isPasswordType = type === "password";
 
     const [showPassword, setShowPassword] = useState(false);
-    const currentType = isPasswordType
-      ? showPassword
-        ? "text"
-        : "password"
-      : type;
+    const currentType = isPasswordType && showPassword ? "text" : type;
 
     const handleTogglePassword = () => {
       setShowPassword((prev) => !prev);
@@ -32,7 +28,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           />
 
           {isPasswordType && (
-            <S.IconButton type="button" onClick={handleTogglePassword}>
+            <S.IconButton
+              type="button"
+              onClick={handleTogglePassword}
+              aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 표시"}
+            >
+              {" "}
               <Image
                 src={eyeIcon}
                 alt="비밀번호 토글 아이콘"
