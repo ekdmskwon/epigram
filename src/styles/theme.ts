@@ -3,7 +3,7 @@ import { DefaultTheme } from "styled-components";
 export const theme: DefaultTheme = {
   colors: {
     // 블랙 계열 시스템
-    black950: "#373737",
+    black950: "#121212",
     black900: "#373737",
     black800: "#373737",
     black700: "#373737",
