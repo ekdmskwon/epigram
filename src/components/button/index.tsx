@@ -19,13 +19,13 @@ export const Button = ({
 
   return (
     <StyledButton
-      variant={variant}
-      bgType={bgType}
-      shape={defaultShape}
-      size={defaultSize}
-      iconPosition={iconPosition}
-      disabled={disabled}
+      $variant={variant}
+      $bgType={bgType}
+      $shape={defaultShape}
+      $size={defaultSize}
+      $iconPosition={iconPosition}
       $hasIcon={!!icon}
+      disabled={disabled}
       {...props}
     >
       {icon && <span className="button-icon">{icon}</span>}
