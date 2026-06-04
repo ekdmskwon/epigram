@@ -28,6 +28,15 @@ declare module 'styled-components' {
       background: string;
       state: string;
 
+      inputBg: string;
+      inputBorder: string;
+      inputBorderFocus: string;
+      buttonFillDefault: string;
+      buttonFillHover: string;
+      buttonFillActive: string;
+      buttonFillDisabled: string;
+      buttonFillDisabledText: string;
+
       gray400: string;
       gray300: string;
       gray200: string;
