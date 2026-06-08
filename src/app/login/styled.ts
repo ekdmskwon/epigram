@@ -1,8 +1,5 @@
 import styled from "styled-components";
-import {
-  SIGNUP_FIELD_HEIGHT,
-  SIGNUP_FIELD_WIDTH,
-} from "@/app/signup/styled";
+import { FORM_FIELD_HEIGHT, FORM_FIELD_WIDTH } from "@/styles/form";
 
 export const LoginPageContainer = styled.div`
   width: 100%;
@@ -25,7 +22,7 @@ export const LoginMain = styled.main`
 
 export const FormWrapper = styled.form`
   width: 100%;
-  max-width: ${SIGNUP_FIELD_WIDTH}px;
+  max-width: ${FORM_FIELD_WIDTH}px;
   margin: 0 auto;
   box-sizing: border-box;
   display: flex;
@@ -33,8 +30,8 @@ export const FormWrapper = styled.form`
   align-items: center;
   gap: 24px;
 
-  @media (min-width: ${SIGNUP_FIELD_WIDTH}px) {
-    width: ${SIGNUP_FIELD_WIDTH}px;
+  @media (min-width: ${FORM_FIELD_WIDTH}px) {
+    width: ${FORM_FIELD_WIDTH}px;
   }
 `;
 
@@ -42,13 +39,13 @@ export const LogoWrapper = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  max-width: ${SIGNUP_FIELD_WIDTH}px;
+  max-width: ${FORM_FIELD_WIDTH}px;
   margin-bottom: 8px;
 `;
 
 export const FormFields = styled.div`
   width: 100%;
-  max-width: ${SIGNUP_FIELD_WIDTH}px;
+  max-width: ${FORM_FIELD_WIDTH}px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -56,14 +53,14 @@ export const FormFields = styled.div`
 
 export const ButtonWrapper = styled.div`
   width: 100%;
-  max-width: ${SIGNUP_FIELD_WIDTH}px;
-  height: ${SIGNUP_FIELD_HEIGHT}px;
+  max-width: ${FORM_FIELD_WIDTH}px;
+  height: ${FORM_FIELD_HEIGHT}px;
   margin-top: 8px;
 
   button {
     width: 100%;
-    height: ${SIGNUP_FIELD_HEIGHT}px;
-    min-height: ${SIGNUP_FIELD_HEIGHT}px;
+    height: ${FORM_FIELD_HEIGHT}px;
+    min-height: ${FORM_FIELD_HEIGHT}px;
     padding-top: 0;
     padding-bottom: 0;
   }
@@ -71,7 +68,7 @@ export const ButtonWrapper = styled.div`
 
 export const LoginButton = styled.button<{ $ready: boolean }>`
   width: 100%;
-  height: ${SIGNUP_FIELD_HEIGHT}px;
+  height: ${FORM_FIELD_HEIGHT}px;
   border: none;
   border-radius: 12px;
   font-family: ${({ theme }) => theme.fonts.main};
@@ -96,7 +93,7 @@ export const LoginButton = styled.button<{ $ready: boolean }>`
 
 export const SignUpLinkRow = styled.p`
   width: 100%;
-  max-width: ${SIGNUP_FIELD_WIDTH}px;
+  max-width: ${FORM_FIELD_WIDTH}px;
   margin: -8px 0 0;
   text-align: right;
   font-size: 14px;
@@ -115,7 +112,7 @@ export const SignUpLinkText = styled.span`
 
 export const FormError = styled.p`
   width: 100%;
-  max-width: ${SIGNUP_FIELD_WIDTH}px;
+  max-width: ${FORM_FIELD_WIDTH}px;
   color: ${({ theme }) => theme.colors.state};
   font-size: 14px;
   text-align: center;

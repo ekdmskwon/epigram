@@ -53,3 +53,25 @@ export function hasLoginFieldErrors(errors: LoginFieldErrors): boolean {
 export function isLoginFormReady(values: LoginFormValues): boolean {
   return !hasLoginFieldErrors(validateLoginForm(values));
 }
+
+export function getLoginSubmitErrorMessage(
+  data: unknown,
+  status?: number,
+): string {
+  if (status !== undefined && status >= 500) {
+    return LOGIN_ERROR_MESSAGES.serverError;
+  }
+
+  const message =
+    data && typeof data === "object" && typeof (data as { message?: string }).message === "string"
+      ? (data as { message: string }).message
+      : "";
+
+  if (message.trim()) return message;
+
+  if (status !== undefined) {
+    return `로그인에 실패했습니다. (오류 코드: ${status})`;
+  }
+
+  return "로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+}

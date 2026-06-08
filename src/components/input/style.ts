@@ -54,12 +54,8 @@ export const InputContainer = styled.div<{
   transition: border-color 0.2s ease;
 
   &:focus-within {
-    border-color: ${({ theme, $hasError, $appearance = "filled" }) =>
-      $hasError
-        ? theme.colors.state
-        : $appearance === "outlined"
-          ? theme.colors.line200
-          : theme.colors.inputBorderFocus};
+    border-color: ${({ theme, $hasError }) =>
+      $hasError ? theme.colors.state : theme.colors.inputBorderFocus};
   }
 `;
 

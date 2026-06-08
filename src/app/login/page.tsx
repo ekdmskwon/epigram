@@ -10,6 +10,7 @@ import Input from "@/components/input";
 import { signIn } from "@/api/auth";
 import { getAccessToken, setTokens } from "@/lib/auth-token";
 import {
+  getLoginSubmitErrorMessage,
   hasLoginFieldErrors,
   isLoginFormReady,
   LOGIN_ERROR_MESSAGES,
@@ -77,9 +78,7 @@ export default function LoginPage() {
       delete next[field];
       return next;
     });
-    if (field === "password") {
-      setPasswordErrorState(false);
-    }
+    setPasswordErrorState(false);
   };
 
   const applyInvalidCredentialsError = () => {
@@ -124,12 +123,19 @@ export default function LoginPage() {
           return;
         }
 
-        if (error.response.status >= 500) {
+        const { status, data } = error.response;
+
+        if (status >= 500) {
           setSubmitError(LOGIN_ERROR_MESSAGES.serverError);
           return;
         }
 
-        applyInvalidCredentialsError();
+        if (status === 400 || status === 401) {
+          applyInvalidCredentialsError();
+          return;
+        }
+
+        setSubmitError(getLoginSubmitErrorMessage(data, status));
         return;
       }
 
