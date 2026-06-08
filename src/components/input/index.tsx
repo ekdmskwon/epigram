@@ -10,8 +10,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       hint,
       guideMessage,
       errorMessage,
+      showErrorState,
       type = "text",
       $size = "lg",
+      $appearance = "filled",
       id: idProp,
       disabled,
       ...props
@@ -20,7 +22,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   ) => {
     const generatedId = useId();
     const inputId = idProp ?? generatedId;
-    const hasError = !!errorMessage;
+    const hasError = !!errorMessage || !!showErrorState;
     const isPasswordType = type === "password";
 
     const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +31,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <S.InputWrapper $size={$size}>
         {label && <S.Label htmlFor={inputId}>{label}</S.Label>}
-        <S.InputContainer $hasError={hasError}>
+        <S.InputContainer $hasError={hasError} $appearance={$appearance}>
           <S.BaseInput
             ref={ref}
             id={inputId}
@@ -39,7 +41,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             $isPassword={isPasswordType}
             aria-invalid={hasError}
             aria-describedby={
-              hasError
+              errorMessage
                 ? `${inputId}-error`
                 : guideMessage
                   ? `${inputId}-guide`
@@ -70,7 +72,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             </S.IconButton>
           )}
         </S.InputContainer>
-        {hasError && (
+        {errorMessage && (
           <S.ErrorMessage id={`${inputId}-error`} role="alert">
             {errorMessage}
           </S.ErrorMessage>
