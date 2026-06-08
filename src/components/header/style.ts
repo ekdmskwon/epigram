@@ -167,7 +167,6 @@ export const ProfileImageWrapper = styled.div`
   height: 32px;
   border-radius: 50%;
   overflow: hidden;
-  background-color: ${({ theme }) => theme.colors.black700};
   position: relative;
   flex-shrink: 0;
 `;

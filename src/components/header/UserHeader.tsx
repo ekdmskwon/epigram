@@ -39,7 +39,7 @@ const UserHeader = ({ userName, profileImageUrl }: UserHeaderProps) => {
             </Link>
 
             <S.MenuLinks>
-              <Link href="/feed">피드</Link>
+              <Link href="/epigramlist">피드</Link>
               <Link href="/search">검색</Link>
             </S.MenuLinks>
           </S.LeftSection>
@@ -60,7 +60,9 @@ const UserHeader = ({ userName, profileImageUrl }: UserHeaderProps) => {
                   }
                   fill
                   sizes="32px"
-                  style={{ objectFit: "cover" }}
+                  style={{
+                    objectFit: profileImageUrl ? "cover" : "contain",
+                  }}
                 />
               </S.ProfileImageWrapper>
               <S.UserName>{userName}</S.UserName>
@@ -70,7 +72,7 @@ const UserHeader = ({ userName, profileImageUrl }: UserHeaderProps) => {
       </S.HeaderBase>
 
       <S.MobileMenuPanel $open={isMenuOpen} aria-hidden={!isMenuOpen}>
-        <Link href="/feed" onClick={closeMenu}>
+        <Link href="/epigramlist" onClick={closeMenu}>
           피드
         </Link>
         <Link href="/search" onClick={closeMenu}>
