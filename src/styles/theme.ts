@@ -30,7 +30,7 @@ export const theme: DefaultTheme = {
     background: "#F8F9FA",
     state: "#FF6577",
 
-    // 컴포넌트 시맨틱 컬러
+    // 컴포넌트 시맨틱 컬러 
     inputBg: "#EEF1F4",
     inputBorder: "transparent",
     inputBorderFocus: "#CFDBEA",
@@ -72,7 +72,7 @@ export const theme: DefaultTheme = {
 
   // 폰트 종류
   fonts: {
-    main: "'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+    main: "var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
     point: "var(--font-iropke), Georgia, serif",
   },
 

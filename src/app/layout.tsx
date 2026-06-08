@@ -1,6 +1,13 @@
 import localFont from "next/font/local";
 import ClientProvider from "@/components/Provider";
 
+const pretendard = localFont({
+  src: "./fonts/PretendardVariable.woff2",
+  display: "swap",
+  variable: "--font-pretendard",
+  weight: "100 900",
+});
+
 const iropkeBatang = localFont({
   src: "./fonts/IropkeBatangM.woff",
   variable: "--font-iropke",
@@ -14,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body className={iropkeBatang.variable}>
+      <body className={`${pretendard.variable} ${iropkeBatang.variable}`}>
         <ClientProvider>{children}</ClientProvider>
       </body>
     </html>
