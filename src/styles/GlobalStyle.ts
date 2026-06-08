@@ -14,8 +14,8 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    background-color: #ffffff;
+    font-family: ${({ theme }) => theme.fonts.main};
+    background-color: ${({ theme }) => theme.colors.background};
     color: ${({ theme }) => theme.colors.black950};
   }
 
@@ -25,7 +25,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   button, input, textarea, select {
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-family: ${({ theme }) => theme.fonts.main};
     border: none;
     background: none;
     outline: none;

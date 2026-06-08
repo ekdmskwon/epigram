@@ -4,10 +4,10 @@ export const theme: DefaultTheme = {
   colors: {
     // 블랙 계열 시스템
     black950: "#121212",
-    black900: "#373737",
+    black900: "#1F1F1F",
     black800: "#373737",
-    black700: "#373737",
-    black600: "#373737",
+    black700: "#454545",
+    black600: "#525252",
     black500: "#454545",
     black400: "#525252",
     black300: "#5E5E5E",
@@ -27,8 +27,19 @@ export const theme: DefaultTheme = {
     blue100: "#FFFFFF",
 
     // 배경 및 상태 컬러
-    background: "#F5F7FA",
+    background: "#F8F9FA",
     state: "#FF6577",
+
+    // 컴포넌트 시맨틱 컬러 
+    inputBg: "#EEF1F4",
+    inputBorder: "transparent",
+    inputBorderFocus: "#CFDBEA",
+    buttonFillDefault: "#373737",
+    buttonFillDefaultText: "#FFFFFF",
+    buttonFillHover: "#525252",
+    buttonFillActive: "#121212",
+    buttonFillDisabled: "#CBD3E1",
+    buttonFillDisabledText: "#FFFFFF",
 
     // 그레이 계열 시스템
     gray400: "#919191",
@@ -61,7 +72,7 @@ export const theme: DefaultTheme = {
 
   // 폰트 종류
   fonts: {
-    main: "'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+    main: "var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
     point: "var(--font-iropke), Georgia, serif",
   },
 
