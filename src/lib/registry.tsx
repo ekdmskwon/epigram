@@ -13,7 +13,6 @@ export default function StyledComponentsRegistry({
 
   useServerInsertedHTML(() => {
     const styles = jsxStyleSheet.getStyleElement();
-    jsxStyleSheet.instance.clearTag();
     return <>{styles}</>;
   });
 

@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import type { InputSize } from "./type";
+import type { InputAppearance, InputSize } from "./type";
 
 const widthStyles: Record<InputSize, ReturnType<typeof css>> = {
   sm: css`
@@ -32,6 +32,7 @@ export const Label = styled.label`
 
 export const InputContainer = styled.div<{
   $hasError?: boolean;
+  $appearance?: InputAppearance;
 }>`
   position: relative;
   display: flex;
@@ -40,16 +41,25 @@ export const InputContainer = styled.div<{
   height: 64px;
   min-height: 64px;
   border: 1px solid
-    ${({ theme, $hasError }) =>
-      $hasError ? theme.colors.state : theme.colors.inputBorder};
+    ${({ theme, $hasError, $appearance = "filled" }) =>
+      $hasError
+        ? theme.colors.state
+        : $appearance === "outlined"
+          ? theme.colors.line200
+          : theme.colors.inputBorder};
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.colors.inputBg};
+  background-color: ${({ theme, $appearance = "filled" }) =>
+    $appearance === "outlined" ? "#FFFFFF" : theme.colors.inputBg};
   box-sizing: border-box;
   transition: border-color 0.2s ease;
 
   &:focus-within {
-    border-color: ${({ theme, $hasError }) =>
-      $hasError ? theme.colors.state : theme.colors.inputBorderFocus};
+    border-color: ${({ theme, $hasError, $appearance = "filled" }) =>
+      $hasError
+        ? theme.colors.state
+        : $appearance === "outlined"
+          ? theme.colors.line200
+          : theme.colors.inputBorderFocus};
   }
 `;
 
