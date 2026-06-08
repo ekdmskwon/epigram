@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAccessToken } from "@/lib/auth-token";
+import { clearTokens, getAccessToken } from "@/lib/auth-token";
 
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -37,7 +37,14 @@ instance.interceptors.response.use(
 
       // 로그인이 안 되어 있거나 만료된 경우 (401 에러)
       if (status === 401) {
-        console.error("로그인이 필요하거나 만료되었어요.");
+        const requestUrl = error.config?.url ?? "";
+        const isAuthRequest =
+          requestUrl.includes("/auth/signIn") ||
+          requestUrl.includes("/auth/signUp");
+
+        if (!isAuthRequest) {
+          clearTokens();
+        }
       }
     }
     return Promise.reject(error);

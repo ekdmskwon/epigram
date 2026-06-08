@@ -8,7 +8,7 @@ import GuestHeader from "@/components/header/GuestHeader";
 import Input from "@/components/input";
 import { Button } from "@/components/button";
 import { signUp } from "@/api/auth";
-import { setTokens } from "@/lib/auth-token";
+import { setTokens, setUserProfile } from "@/lib/auth-token";
 import {
   getSignUpSubmitErrorMessage,
   hasFieldErrors,
@@ -100,7 +100,7 @@ export default function SignUpPage() {
     setIsSubmitting(true);
 
     try {
-      const { accessToken, refreshToken } = await signUp({
+      const { accessToken, refreshToken, user } = await signUp({
         email: email.trim(),
         password,
         passwordConfirmation,
@@ -108,6 +108,7 @@ export default function SignUpPage() {
       });
 
       setTokens(accessToken, refreshToken);
+      setUserProfile(user.nickname, user.image);
       router.push("/");
     } catch (error) {
       if (axios.isAxiosError(error)) {

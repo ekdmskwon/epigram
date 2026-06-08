@@ -9,7 +9,11 @@ import Card from "@/components/card";
 import CardSkeleton from "@/components/card/skeleton";
 import GuestHeader from "@/components/header/GuestHeader";
 import UserHeader from "@/components/header/UserHeader";
-import { getAccessToken } from "@/lib/auth-token";
+import {
+  getAccessToken,
+  getUserProfile,
+  setUserProfile,
+} from "@/lib/auth-token";
 import * as S from "./styled";
 
 const PAGE_SIZE = 6;
@@ -80,13 +84,29 @@ export default function EpigramListPage() {
     setIsLoggedIn(!!token);
 
     if (token) {
+      const cachedProfile = getUserProfile();
+      if (cachedProfile.nickname) {
+        setUserName(cachedProfile.nickname);
+      }
+      if (cachedProfile.image) {
+        setProfileImageUrl(cachedProfile.image);
+      }
+
       getUserMe()
         .then((user) => {
           setUserName(user.nickname);
           setProfileImageUrl(user.image);
+          setUserProfile(user.nickname, user.image);
         })
         .catch(() => {
-          setIsLoggedIn(false);
+          if (!getAccessToken()) {
+            setIsLoggedIn(false);
+            setUserName("게스트");
+            setProfileImageUrl(null);
+            return;
+          }
+
+          // 프로필 API 실패 시 로그인 시 저장한 닉네임 유지
         });
     }
 
