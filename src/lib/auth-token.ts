@@ -1,4 +1,8 @@
-/** 토큰 저장/조회 */
+/**
+ * 토큰 저장/조회 (localStorage)
+ * Epigram API는 응답 body로 토큰을 내려주므로 현재는 localStorage를 사용합니다.
+ * httpOnly 쿠키 전환은 백엔드 Set-Cookie 지원이 필요합니다.
+ */
 const ACCESS_TOKEN_KEY = "epigram_access_token";
 const REFRESH_TOKEN_KEY = "epigram_refresh_token";
 

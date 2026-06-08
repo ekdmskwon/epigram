@@ -1,8 +1,6 @@
 import instance from "@/lib/axios";
 import type { User } from "@/types/user";
 
-export type { User };
-
 // GET /users/me: 내 정보 조회 API 함수
 export const getUserMe = async (): Promise<User> => {
   const response = await instance.get<User>(`/users/me`);
