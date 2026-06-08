@@ -1,50 +1,86 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useId, useState } from "react";
 import Image from "next/image";
-import eyeIcon from "../../../public/icons/eye-icon.svg";
 import { InputProps } from "./type";
 import * as S from "./style";
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ errorMessage, type = "text", $size = "normal", ...props }, ref) => {
+  (
+    {
+      label,
+      hint,
+      guideMessage,
+      errorMessage,
+      type = "text",
+      $size = "lg",
+      id: idProp,
+      disabled,
+      ...props
+    },
+    ref,
+  ) => {
+    const generatedId = useId();
+    const inputId = idProp ?? generatedId;
     const hasError = !!errorMessage;
     const isPasswordType = type === "password";
 
     const [showPassword, setShowPassword] = useState(false);
     const currentType = isPasswordType && showPassword ? "text" : type;
 
-    const handleTogglePassword = () => {
-      setShowPassword((prev) => !prev);
-    };
-
     return (
       <S.InputWrapper $size={$size}>
-        <S.InputContainer $hasError={hasError} $size={$size}>
+        {label && <S.Label htmlFor={inputId}>{label}</S.Label>}
+        <S.InputContainer $hasError={hasError}>
           <S.BaseInput
             ref={ref}
+            id={inputId}
             type={currentType}
-            $size={$size}
+            disabled={disabled}
             $hasError={hasError}
+            $isPassword={isPasswordType}
+            aria-invalid={hasError}
+            aria-describedby={
+              hasError
+                ? `${inputId}-error`
+                : guideMessage
+                  ? `${inputId}-guide`
+                  : hint
+                    ? `${inputId}-hint`
+                    : undefined
+            }
             {...props}
           />
 
-          {isPasswordType && (
+          {isPasswordType && !disabled && (
             <S.IconButton
               type="button"
-              onClick={handleTogglePassword}
+              onClick={() => setShowPassword((prev) => !prev)}
               aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 표시"}
             >
-              {" "}
               <Image
-                src={eyeIcon}
-                alt="비밀번호 토글 아이콘"
+                src={
+                  showPassword
+                    ? "/icons/eye-visible.svg"
+                    : "/icons/eye-icon.svg"
+                }
+                alt=""
                 width={24}
                 height={24}
-                style={{ opacity: showPassword ? 1 : 0.4 }}
+                aria-hidden
               />
             </S.IconButton>
           )}
         </S.InputContainer>
-        {hasError && <S.ErrorMessage>{errorMessage}</S.ErrorMessage>}
+        {hasError && (
+          <S.ErrorMessage id={`${inputId}-error`} role="alert">
+            {errorMessage}
+          </S.ErrorMessage>
+        )}
+        {!hasError && guideMessage && (
+          <S.GuideMessage id={`${inputId}-guide`}>{guideMessage}</S.GuideMessage>
+        )}
+        {!hasError && !guideMessage && hint && (
+          <S.HintMessage id={`${inputId}-hint`}>{hint}</S.HintMessage>
+        )}
       </S.InputWrapper>
     );
   },

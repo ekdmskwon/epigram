@@ -35,6 +35,7 @@ export const theme: DefaultTheme = {
     inputBorder: "transparent",
     inputBorderFocus: "#CFDBEA",
     buttonFillDefault: "#373737",
+    buttonFillDefaultText: "#FFFFFF",
     buttonFillHover: "#525252",
     buttonFillActive: "#121212",
     buttonFillDisabled: "#CBD3E1",

@@ -32,6 +32,7 @@ declare module 'styled-components' {
       inputBorder: string;
       inputBorderFocus: string;
       buttonFillDefault: string;
+      buttonFillDefaultText: string;
       buttonFillHover: string;
       buttonFillActive: string;
       buttonFillDisabled: string;
