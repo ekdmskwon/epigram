@@ -1,6 +1,6 @@
 import instance from "@/lib/axios";
+import type { User } from "@/types/user";
 
-// 회원가입 API
 export interface SignUpRequest {
   email: string;
   nickname: string;
@@ -8,20 +8,10 @@ export interface SignUpRequest {
   passwordConfirmation: string;
 }
 
-export interface UserInfo {
-  id: number;
-  email: string;
-  nickname: string;
-  teamId: string;
-  image: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface SignUpResponse {
   accessToken: string;
   refreshToken: string;
-  user: UserInfo;
+  user: User;
 }
 
 export const signUp = async (body: SignUpRequest): Promise<SignUpResponse> => {
@@ -29,7 +19,6 @@ export const signUp = async (body: SignUpRequest): Promise<SignUpResponse> => {
   return response.data;
 };
 
-// 로그인 API
 export interface SignInRequest {
   email: string;
   password: string;
@@ -38,7 +27,7 @@ export interface SignInRequest {
 export interface SignInResponse {
   accessToken: string;
   refreshToken: string;
-  user: UserInfo;
+  user: User;
 }
 
 export const signIn = async (body: SignInRequest): Promise<SignInResponse> => {
@@ -46,7 +35,6 @@ export const signIn = async (body: SignInRequest): Promise<SignInResponse> => {
   return response.data;
 };
 
-// 토큰 갱신 API
 export interface RefreshTokenRequest {
   refreshToken: string;
 }

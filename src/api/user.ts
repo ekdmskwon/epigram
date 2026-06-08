@@ -1,17 +1,9 @@
 import instance from "@/lib/axios";
-
-// 서버가 돌려주는 User 데이터 타입 미리 정의해 둠
-export interface UserResponse {
-  id: number;
-  nickname: string;
-  createdAt: string;
-  updatedAt: string;
-  image: string | null; // 이미지가 없을 수도 있으니까 null도 허용
-}
+import type { User } from "@/types/user";
 
 // GET /users/me: 내 정보 조회 API 함수
-export const getUserMe = async (): Promise<UserResponse> => {
-  const response = await instance.get<UserResponse>(`/users/me`);
+export const getUserMe = async (): Promise<User> => {
+  const response = await instance.get<User>(`/users/me`);
   return response.data;
 };
 
@@ -40,8 +32,8 @@ export const updateUserMe = async (
 };
 
 //GET /users/{id}: 특정 유저 정보 조회 API 함수
-export const getUserById = async (id: number): Promise<UserResponse> => {
-  const response = await instance.get<UserResponse>(`/users/${id}`);
+export const getUserById = async (id: number): Promise<User> => {
+  const response = await instance.get<User>(`/users/${id}`);
   return response.data;
 };
 
