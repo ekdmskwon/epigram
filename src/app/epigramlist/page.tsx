@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getEpigrams, type Epigram } from "@/api/epigram";
@@ -26,7 +26,7 @@ export default function EpigramListPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [loadError, setLoadError] = useState("");
-  const [userName, setUserName] = useState("게스트");
+  const [userName, setUserName] = useState("");
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -83,33 +83,32 @@ export default function EpigramListPage() {
     const token = getAccessToken();
     setIsLoggedIn(!!token);
 
-    if (token) {
-      const cachedProfile = getUserProfile();
-      if (cachedProfile.nickname) {
-        setUserName(cachedProfile.nickname);
-      }
-      if (cachedProfile.image) {
-        setProfileImageUrl(cachedProfile.image);
-      }
+    if (!token) return;
 
-      getUserMe()
-        .then((user) => {
-          setUserName(user.nickname);
-          setProfileImageUrl(user.image);
-          setUserProfile(user.nickname, user.image);
-        })
-        .catch(() => {
-          if (!getAccessToken()) {
-            setIsLoggedIn(false);
-            setUserName("게스트");
-            setProfileImageUrl(null);
-            return;
-          }
-
-          // 프로필 API 실패 시 로그인 시 저장한 닉네임 유지
-        });
+    const cachedProfile = getUserProfile();
+    if (cachedProfile.nickname) {
+      setUserName(cachedProfile.nickname);
+    }
+    if (cachedProfile.image) {
+      setProfileImageUrl(cachedProfile.image);
     }
 
+    getUserMe()
+      .then((user) => {
+        setUserName(user.nickname);
+        setProfileImageUrl(user.image);
+        setUserProfile(user.nickname, user.image);
+      })
+      .catch(() => {
+        if (!getAccessToken()) {
+          setIsLoggedIn(false);
+          setUserName("");
+          setProfileImageUrl(null);
+        }
+      });
+  }, []);
+
+  useEffect(() => {
     loadEpigrams();
   }, [loadEpigrams]);
 
@@ -139,13 +138,31 @@ export default function EpigramListPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const skeletonIndices = Array.from({ length: PAGE_SIZE }, (_, index) => index);
-  const leftSkeletonIndices = skeletonIndices.filter((index) => index % 2 === 0);
-  const rightSkeletonIndices = skeletonIndices.filter((index) => index % 2 === 1);
+  const skeletonIndices = useMemo(
+    () => Array.from({ length: PAGE_SIZE }, (_, index) => index),
+    [],
+  );
+  const leftSkeletonIndices = useMemo(
+    () => skeletonIndices.filter((index) => index % 2 === 0),
+    [skeletonIndices],
+  );
+  const rightSkeletonIndices = useMemo(
+    () => skeletonIndices.filter((index) => index % 2 === 1),
+    [skeletonIndices],
+  );
 
-  const epigramItems = epigrams.map((epigram, index) => ({ epigram, index }));
-  const leftColumnItems = epigramItems.filter(({ index }) => index % 2 === 0);
-  const rightColumnItems = epigramItems.filter(({ index }) => index % 2 === 1);
+  const epigramItems = useMemo(
+    () => epigrams.map((epigram, index) => ({ epigram, index })),
+    [epigrams],
+  );
+  const leftColumnItems = useMemo(
+    () => epigramItems.filter(({ index }) => index % 2 === 0),
+    [epigramItems],
+  );
+  const rightColumnItems = useMemo(
+    () => epigramItems.filter(({ index }) => index % 2 === 1),
+    [epigramItems],
+  );
 
   const renderCard = (epigram: Epigram, index: number) => (
     <Card
