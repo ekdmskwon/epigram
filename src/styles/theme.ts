@@ -28,6 +28,7 @@ export const theme: DefaultTheme = {
 
     // 배경 및 상태 컬러
     background: "#F8F9FA",
+    background100: "#F9F9F9",
     state: "#FF6577",
 
     // 컴포넌트 시맨틱 컬러 

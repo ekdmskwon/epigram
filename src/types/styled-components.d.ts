@@ -26,6 +26,7 @@ declare module 'styled-components' {
       blue100: string;
 
       background: string;
+      background100: string;
       state: string;
 
       inputBg: string;

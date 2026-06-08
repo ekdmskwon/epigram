@@ -8,7 +8,13 @@ import axios from "axios";
 import GuestHeader from "@/components/header/GuestHeader";
 import Input from "@/components/input";
 import { signIn } from "@/api/auth";
-import { getAccessToken, setTokens } from "@/lib/auth-token";
+import { getUserMe } from "@/api/user";
+import {
+  clearTokens,
+  getAccessToken,
+  setTokens,
+  setUserProfile,
+} from "@/lib/auth-token";
 import {
   getLoginSubmitErrorMessage,
   hasLoginFieldErrors,
@@ -39,9 +45,16 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (getAccessToken()) {
-      router.replace("/");
-    }
+    const token = getAccessToken();
+    if (!token) return;
+
+    getUserMe()
+      .then(() => {
+        router.replace("/");
+      })
+      .catch(() => {
+        clearTokens();
+      });
   }, [router]);
 
   const formValues = useMemo(
@@ -107,12 +120,13 @@ export default function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      const { accessToken, refreshToken } = await signIn({
+      const { accessToken, refreshToken, user } = await signIn({
         email: email.trim(),
         password,
       });
 
       setTokens(accessToken, refreshToken);
+      setUserProfile(user.nickname, user.image);
       router.push("/");
     } catch (error) {
       if (axios.isAxiosError(error)) {
