@@ -27,7 +27,7 @@ import {
 } from "@/lib/validation/login";
 import * as S from "./styled";
 
-const ALL_LOGIN_FIELDS_TOUCHED: Record<LoginField, boolean> = {
+const ALL_LOGIN_FIELDS_BLURRED: Record<LoginField, boolean> = {
   email: true,
   password: true,
 };
@@ -38,9 +38,9 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState<LoginFieldErrors>({});
   const [passwordErrorState, setPasswordErrorState] = useState(false);
-  const [touched, setTouched] = useState<Partial<Record<LoginField, boolean>>>(
-    {},
-  );
+  const [blurredFields, setBlurredFields] = useState<
+    Partial<Record<LoginField, boolean>>
+  >({});
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -68,10 +68,10 @@ export default function LoginPage() {
   const canSubmit = isLoginFormReady(formValues);
 
   const getDisplayError = (field: LoginField) =>
-    touched[field] ? fieldErrors[field] : undefined;
+    blurredFields[field] ? fieldErrors[field] : undefined;
 
   const handleFieldBlur = (field: LoginField) => {
-    setTouched((prev) => ({ ...prev, [field]: true }));
+    setBlurredFields((prev) => ({ ...prev, [field]: true }));
     const message = validateLoginFieldOnBlur(field, formValues);
     setFieldErrors((prev) => {
       const next = { ...prev };
@@ -99,7 +99,7 @@ export default function LoginPage() {
       email: LOGIN_ERROR_MESSAGES.invalidCredentials,
     });
     setPasswordErrorState(true);
-    setTouched(ALL_LOGIN_FIELDS_TOUCHED);
+    setBlurredFields(ALL_LOGIN_FIELDS_BLURRED);
     setSubmitError("");
   };
 
@@ -108,7 +108,7 @@ export default function LoginPage() {
     setSubmitError("");
     setPasswordErrorState(false);
 
-    setTouched(ALL_LOGIN_FIELDS_TOUCHED);
+    setBlurredFields(ALL_LOGIN_FIELDS_BLURRED);
 
     const errors = validateLoginForm(formValues);
     if (hasLoginFieldErrors(errors)) {
