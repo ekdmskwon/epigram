@@ -259,7 +259,12 @@ export default function AddEpigramForm() {
             $size="lg"
             $appearance="outlined"
             value={referenceUrl}
-            onChange={(e) => setReferenceUrl(e.target.value)}
+            errorMessage={getDisplayError("referenceUrl")}
+            onBlur={() => handleFieldBlur("referenceUrl")}
+            onChange={(e) => {
+              setReferenceUrl(e.target.value);
+              clearFieldError("referenceUrl");
+            }}
           />
         </S.SourceFields>
       </S.FieldGroup>

@@ -74,7 +74,9 @@ export default function EpigramFeed({ initialData }: EpigramFeedProps) {
           {loadError && <S.StatusMessage>{loadError}</S.StatusMessage>}
 
           {epigrams.length === 0 ? (
-            <S.StatusMessage>등록된 에피그램이 없습니다.</S.StatusMessage>
+            !loadError && (
+              <S.StatusMessage>등록된 에피그램이 없습니다.</S.StatusMessage>
+            )
           ) : (
             <>
               <S.FeedGridMobile>

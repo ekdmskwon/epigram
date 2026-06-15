@@ -46,6 +46,24 @@ export function getContentError(content: string): string | undefined {
   return undefined;
 }
 
+function validateReferenceUrl(referenceUrl: string): string | undefined {
+  if (referenceUrl.trim()) {
+    try {
+      const parsed = new URL(referenceUrl.trim());
+      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        return "http:// 또는 https://로 시작하는 유효한 URL을 입력해주세요.";
+      }
+    } catch {
+      return "올바른 URL 형식이 아닙니다.";
+    }
+  }
+  return undefined;
+}
+
+export function getReferenceUrlError(referenceUrl: string): string | undefined {
+  return validateReferenceUrl(referenceUrl);
+}
+
 export function validateAddEpigramFieldOnBlur(
   field: AddEpigramField,
   values: AddEpigramFormValues,
@@ -59,8 +77,9 @@ export function validateAddEpigramFieldOnBlur(
       if (!values.authorName.trim()) return "저자 이름을 입력해주세요.";
       return undefined;
     case "referenceTitle":
-    case "referenceUrl":
       return undefined;
+    case "referenceUrl":
+      return getReferenceUrlError(values.referenceUrl);
     default:
       return undefined;
   }
@@ -81,6 +100,11 @@ export function validateAddEpigramForm(
 
   if (values.authorType === "self" && !userName.trim()) {
     errors.authorName = "본인 정보를 불러오지 못했습니다. 다시 로그인해주세요.";
+  }
+
+  const referenceUrlError = validateReferenceUrl(values.referenceUrl);
+  if (referenceUrlError) {
+    errors.referenceUrl = referenceUrlError;
   }
 
   return errors;
