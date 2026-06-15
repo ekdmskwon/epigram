@@ -25,8 +25,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const hasError = !!errorMessage || !!showErrorState;
     const isPasswordType = type === "password";
 
-    const [showPassword, setShowPassword] = useState(false);
-    const currentType = isPasswordType && showPassword ? "text" : type;
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const currentType =
+      isPasswordType && isPasswordVisible ? "text" : type;
 
     return (
       <S.InputWrapper $size={$size}>
@@ -55,12 +56,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {isPasswordType && !disabled && (
             <S.IconButton
               type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 표시"}
+              onClick={() => setIsPasswordVisible((prev) => !prev)}
+              aria-label={
+                isPasswordVisible ? "비밀번호 숨기기" : "비밀번호 표시"
+              }
             >
               <Image
                 src={
-                  showPassword
+                  isPasswordVisible
                     ? "/icons/eye-visible.svg"
                     : "/icons/eye-icon.svg"
                 }
