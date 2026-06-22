@@ -25,10 +25,11 @@ export const createComment = async (
   epigramId: number,
   body: CreateCommentRequest,
 ): Promise<CommentItem> => {
-  const response = await instance.post<CommentItem>(
-    `/epigrams/${epigramId}/comments`,
-    body,
-  );
+  const response = await instance.post<CommentItem>("/comments", {
+    epigramId,
+    content: body.content,
+    isPrivate: body.isPrivate ?? false,
+  });
   return response.data;
 };
 
@@ -70,10 +71,10 @@ export const updateComment = async (
   id: number,
   body: UpdateCommentRequest,
 ): Promise<CommentItem> => {
-  const response = await instance.patch<CommentItem>(
-    `/comments/${id}`,
-    body,
-  );
+  const response = await instance.patch<CommentItem>(`/comments/${id}`, {
+    content: body.content,
+    isPrivate: body.isPrivate ?? false,
+  });
   return response.data;
 };
 

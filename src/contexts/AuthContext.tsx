@@ -17,6 +17,7 @@ import {
 
 type AuthContextValue = {
   isLoggedIn: boolean;
+  userId: number | null;
   userName: string;
   profileImageUrl: string | null;
 };
@@ -25,6 +26,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
   const [userName, setUserName] = useState("");
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
@@ -44,6 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     getUserMe()
       .then((user) => {
+        setUserId(user.id);
         setUserName(user.nickname);
         setProfileImageUrl(user.image);
         setUserProfile(user.nickname, user.image);
@@ -51,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .catch(() => {
         if (!getAccessToken()) {
           setIsLoggedIn(false);
+          setUserId(null);
           setUserName("");
           setProfileImageUrl(null);
         }
@@ -58,8 +62,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ isLoggedIn, userName, profileImageUrl }),
-    [isLoggedIn, userName, profileImageUrl],
+    () => ({ isLoggedIn, userId, userName, profileImageUrl }),
+    [isLoggedIn, userId, userName, profileImageUrl],
   );
 
   return (
