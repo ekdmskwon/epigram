@@ -11,11 +11,11 @@ export const GlobalStyle = createGlobalStyle`
   body {
     max-width: 100vw;
     overflow-x: hidden;
+    background-color: ${({ theme }) => theme.colors.background};
   }
 
   body {
     font-family: ${({ theme }) => theme.fonts.main};
-    background-color: ${({ theme }) => theme.colors.background};
     color: ${({ theme }) => theme.colors.black950};
   }
 

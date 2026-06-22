@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import GuestHeader from "@/components/header/GuestHeader";
 import { Button } from "@/components/button";
-import * as S from "./styled";
+import * as S from "./styles";
 
 export default function HomePage() {
   const router = useRouter();

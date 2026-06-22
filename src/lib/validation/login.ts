@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export const LOGIN_ERROR_MESSAGES = {
   emailRequired: "이메일은 필수 입력입니다.",
   emailInvalid: "이메일 형식으로 작성해 주세요.",
@@ -17,32 +19,41 @@ export type LoginFormValues = {
   password: string;
 };
 
-export function validateLoginFieldOnBlur(
+export const loginSchema = z.object({
+  email: z
+    .string()
+    .transform((value) => value.trim())
+    .pipe(
+      z
+        .string()
+        .min(1, LOGIN_ERROR_MESSAGES.emailRequired)
+        .refine((value) => EMAIL_REGEX.test(value), {
+          message: LOGIN_ERROR_MESSAGES.emailInvalid,
+        }),
+    ),
+  password: z.string().min(1, LOGIN_ERROR_MESSAGES.passwordRequired),
+});
+
+export function validateLoginField(
   field: LoginField,
   values: LoginFormValues,
-): string | undefined {
-  switch (field) {
-    case "email": {
-      const email = values.email.trim();
-      if (!email) return LOGIN_ERROR_MESSAGES.emailRequired;
-      if (!EMAIL_REGEX.test(email)) return LOGIN_ERROR_MESSAGES.emailInvalid;
-      return undefined;
-    }
-    case "password": {
-      if (!values.password) return LOGIN_ERROR_MESSAGES.passwordRequired;
-      return undefined;
-    }
-    default:
-      return undefined;
-  }
+): string {
+  const result = loginSchema.shape[field].safeParse(values[field]);
+  if (result.success) return "";
+  return result.error.issues[0]?.message ?? "";
 }
 
 export function validateLoginForm(values: LoginFormValues): LoginFieldErrors {
+  const result = loginSchema.safeParse(values);
+  if (result.success) return {};
+
   const errors: LoginFieldErrors = {};
-  (["email", "password"] as LoginField[]).forEach((field) => {
-    const message = validateLoginFieldOnBlur(field, values);
-    if (message) errors[field] = message;
-  });
+  for (const issue of result.error.issues) {
+    const field = issue.path[0];
+    if (field === "email" || field === "password") {
+      errors[field] = issue.message;
+    }
+  }
   return errors;
 }
 
@@ -51,7 +62,7 @@ export function hasLoginFieldErrors(errors: LoginFieldErrors): boolean {
 }
 
 export function isLoginFormReady(values: LoginFormValues): boolean {
-  return !hasLoginFieldErrors(validateLoginForm(values));
+  return loginSchema.safeParse(values).success;
 }
 
 export function getLoginSubmitErrorMessage(

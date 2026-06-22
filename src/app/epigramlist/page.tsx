@@ -1,8 +1,9 @@
 import { fetchEpigrams } from "@/lib/fetch-epigrams";
 import AuthHeader from "@/components/header/AuthHeader";
-import EpigramFabGroup from "./_components/EpigramFabGroup";
-import EpigramFeed from "./_components/EpigramFeed";
-import { PAGE_SIZE } from "./constants";
+import EpigramFabGroup from "./EpigramFabGroup";
+import EpigramFeed from "./EpigramFeed";
+import { PAGE_SIZE } from "@/lib/epigramlist";
+import * as S from "./styles";
 
 export default async function EpigramListPage() {
   let initialData = null;
@@ -14,10 +15,10 @@ export default async function EpigramListPage() {
   }
 
   return (
-    <>
+    <S.Page>
       <AuthHeader />
       <EpigramFeed initialData={initialData} />
       <EpigramFabGroup />
-    </>
+    </S.Page>
   );
 }

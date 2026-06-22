@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -11,15 +11,18 @@ import { signUp } from "@/api/auth";
 import { setTokens, setUserProfile } from "@/lib/auth-token";
 import {
   getSignUpSubmitErrorMessage,
+  parseSignUpApiError,
+} from "@/lib/signup-api-error";
+import {
   hasFieldErrors,
   isSignUpFormReady,
-  parseSignUpApiError,
   validateSignUpFieldOnBlur,
   validateSignUpForm,
   type SignUpField,
   type SignUpFieldErrors,
+  type SignUpFormValues,
 } from "@/lib/validation/signup";
-import * as S from "./styled";
+import * as S from "./styles";
 
 const SIGNUP_FIELDS: SignUpField[] = [
   "email",
@@ -27,6 +30,13 @@ const SIGNUP_FIELDS: SignUpField[] = [
   "passwordConfirmation",
   "nickname",
 ];
+
+const INITIAL_FORM_DATA: SignUpFormValues = {
+  email: "",
+  password: "",
+  passwordConfirmation: "",
+  nickname: "",
+};
 
 const ALL_SIGNUP_FIELDS_TOUCHED = SIGNUP_FIELDS.reduce(
   (acc, field) => {
@@ -38,10 +48,7 @@ const ALL_SIGNUP_FIELDS_TOUCHED = SIGNUP_FIELDS.reduce(
 
 export default function SignUpPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [nickname, setNickname] = useState("");
+  const [formData, setFormData] = useState<SignUpFormValues>(INITIAL_FORM_DATA);
   const [fieldErrors, setFieldErrors] = useState<SignUpFieldErrors>({});
   const [touched, setTouched] = useState<Partial<Record<SignUpField, boolean>>>(
     {},
@@ -49,24 +56,18 @@ export default function SignUpPage() {
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const formValues = useMemo(
-    () => ({
-      email,
-      password,
-      passwordConfirmation,
-      nickname,
-    }),
-    [email, password, passwordConfirmation, nickname],
-  );
-
-  const canSubmit = isSignUpFormReady(formValues);
+  const canSubmit = isSignUpFormReady(formData);
 
   const getDisplayError = (field: SignUpField) =>
     touched[field] ? fieldErrors[field] : undefined;
 
+  const updateField = (field: SignUpField, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
   const handleFieldBlur = (field: SignUpField) => {
     setTouched((prev) => ({ ...prev, [field]: true }));
-    const message = validateSignUpFieldOnBlur(field, formValues);
+    const message = validateSignUpFieldOnBlur(field, formData);
     setFieldErrors((prev) => {
       const next = { ...prev };
       if (message) next[field] = message;
@@ -87,10 +88,9 @@ export default function SignUpPage() {
   const handleSignUpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitError("");
-
     setTouched(ALL_SIGNUP_FIELDS_TOUCHED);
 
-    const errors = validateSignUpForm(formValues);
+    const errors = validateSignUpForm(formData);
     if (hasFieldErrors(errors)) {
       setFieldErrors(errors);
       return;
@@ -101,10 +101,10 @@ export default function SignUpPage() {
 
     try {
       const { accessToken, refreshToken, user } = await signUp({
-        email: email.trim(),
-        password,
-        passwordConfirmation,
-        nickname: nickname.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        passwordConfirmation: formData.passwordConfirmation,
+        nickname: formData.nickname.trim(),
       });
 
       setTokens(accessToken, refreshToken);
@@ -169,11 +169,11 @@ export default function SignUpPage() {
             placeholder="이메일"
             $size="lg"
             autoComplete="email"
-            value={email}
+            value={formData.email}
             errorMessage={getDisplayError("email")}
             onBlur={() => handleFieldBlur("email")}
             onChange={(e) => {
-              setEmail(e.target.value);
+              updateField("email", e.target.value);
               clearFieldError("email");
               setSubmitError("");
             }}
@@ -185,11 +185,11 @@ export default function SignUpPage() {
             placeholder="비밀번호"
             $size="lg"
             autoComplete="new-password"
-            value={password}
+            value={formData.password}
             errorMessage={getDisplayError("password")}
             onBlur={() => handleFieldBlur("password")}
             onChange={(e) => {
-              setPassword(e.target.value);
+              updateField("password", e.target.value);
               clearFieldError("password");
             }}
           />
@@ -199,11 +199,11 @@ export default function SignUpPage() {
             placeholder="비밀번호 확인"
             $size="lg"
             autoComplete="new-password"
-            value={passwordConfirmation}
+            value={formData.passwordConfirmation}
             errorMessage={getDisplayError("passwordConfirmation")}
             onBlur={() => handleFieldBlur("passwordConfirmation")}
             onChange={(e) => {
-              setPasswordConfirmation(e.target.value);
+              updateField("passwordConfirmation", e.target.value);
               clearFieldError("passwordConfirmation");
             }}
           />
@@ -214,11 +214,11 @@ export default function SignUpPage() {
             placeholder="닉네임"
             $size="lg"
             autoComplete="nickname"
-            value={nickname}
+            value={formData.nickname}
             errorMessage={getDisplayError("nickname")}
             onBlur={() => handleFieldBlur("nickname")}
             onChange={(e) => {
-              setNickname(e.target.value);
+              updateField("nickname", e.target.value);
               clearFieldError("nickname");
               setSubmitError("");
             }}

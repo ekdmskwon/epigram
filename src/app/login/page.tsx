@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,12 +20,18 @@ import {
   hasLoginFieldErrors,
   isLoginFormReady,
   LOGIN_ERROR_MESSAGES,
-  validateLoginFieldOnBlur,
+  validateLoginField,
   validateLoginForm,
   type LoginField,
   type LoginFieldErrors,
+  type LoginFormValues,
 } from "@/lib/validation/login";
-import * as S from "./styled";
+import * as S from "./styles";
+
+const INITIAL_FORM_DATA: LoginFormValues = {
+  email: "",
+  password: "",
+};
 
 const ALL_LOGIN_FIELDS_BLURRED: Record<LoginField, boolean> = {
   email: true,
@@ -34,8 +40,7 @@ const ALL_LOGIN_FIELDS_BLURRED: Record<LoginField, boolean> = {
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState<LoginFormValues>(INITIAL_FORM_DATA);
   const [fieldErrors, setFieldErrors] = useState<LoginFieldErrors>({});
   const [passwordErrorState, setPasswordErrorState] = useState(false);
   const [blurredFields, setBlurredFields] = useState<
@@ -57,22 +62,18 @@ export default function LoginPage() {
       });
   }, [router]);
 
-  const formValues = useMemo(
-    () => ({
-      email,
-      password,
-    }),
-    [email, password],
-  );
-
-  const canSubmit = isLoginFormReady(formValues);
+  const canSubmit = isLoginFormReady(formData);
 
   const getDisplayError = (field: LoginField) =>
     blurredFields[field] ? fieldErrors[field] : undefined;
 
+  const updateField = (field: LoginField, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
   const handleFieldBlur = (field: LoginField) => {
     setBlurredFields((prev) => ({ ...prev, [field]: true }));
-    const message = validateLoginFieldOnBlur(field, formValues);
+    const message = validateLoginField(field, formData);
     setFieldErrors((prev) => {
       const next = { ...prev };
       if (message) next[field] = message;
@@ -107,10 +108,9 @@ export default function LoginPage() {
     e.preventDefault();
     setSubmitError("");
     setPasswordErrorState(false);
-
     setBlurredFields(ALL_LOGIN_FIELDS_BLURRED);
 
-    const errors = validateLoginForm(formValues);
+    const errors = validateLoginForm(formData);
     if (hasLoginFieldErrors(errors)) {
       setFieldErrors(errors);
       return;
@@ -121,8 +121,8 @@ export default function LoginPage() {
 
     try {
       const { accessToken, refreshToken, user } = await signIn({
-        email: email.trim(),
-        password,
+        email: formData.email.trim(),
+        password: formData.password,
       });
 
       setTokens(accessToken, refreshToken);
@@ -182,11 +182,11 @@ export default function LoginPage() {
               $size="lg"
               $appearance="outlined"
               autoComplete="email"
-              value={email}
+              value={formData.email}
               errorMessage={getDisplayError("email")}
               onBlur={() => handleFieldBlur("email")}
               onChange={(e) => {
-                setEmail(e.target.value);
+                updateField("email", e.target.value);
                 clearFieldError("email");
                 setSubmitError("");
               }}
@@ -198,12 +198,12 @@ export default function LoginPage() {
               $size="lg"
               $appearance="outlined"
               autoComplete="current-password"
-              value={password}
+              value={formData.password}
               errorMessage={getDisplayError("password")}
               showErrorState={passwordErrorState}
               onBlur={() => handleFieldBlur("password")}
               onChange={(e) => {
-                setPassword(e.target.value);
+                updateField("password", e.target.value);
                 clearFieldError("password");
               }}
             />

@@ -5,6 +5,7 @@ import StyledComponentsRegistry from "@/lib/registry";
 import { ThemeProvider } from "styled-components";
 import { theme } from "@/styles/theme";
 import { GlobalStyle } from "@/styles/GlobalStyle";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export default function ClientProvider({
   children,
@@ -15,7 +16,7 @@ export default function ClientProvider({
     <StyledComponentsRegistry>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </ThemeProvider>
     </StyledComponentsRegistry>
   );

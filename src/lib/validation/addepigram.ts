@@ -1,4 +1,6 @@
 export const CONTENT_MAX_LENGTH = 500;
+export const REFERENCE_TITLE_MAX_LENGTH = 100;
+export const REFERENCE_URL_MAX_LENGTH = 250;
 export const MAX_TAGS = 3;
 export const MAX_TAG_LENGTH = 10;
 
@@ -10,7 +12,8 @@ export type AddEpigramField =
   | "content"
   | "authorName"
   | "referenceTitle"
-  | "referenceUrl";
+  | "referenceUrl"
+  | "tags";
 
 export type AddEpigramFieldErrors = Partial<Record<AddEpigramField, string>>;
 
@@ -46,22 +49,49 @@ export function getContentError(content: string): string | undefined {
   return undefined;
 }
 
+export function getTagsError(tags: string[]): string | undefined {
+  if (tags.length === 0) return "태그는 필수로 작성해야 합니다.";
+  return undefined;
+}
+
 function validateReferenceUrl(referenceUrl: string): string | undefined {
-  if (referenceUrl.trim()) {
-    try {
-      const parsed = new URL(referenceUrl.trim());
-      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-        return "http:// 또는 https://로 시작하는 유효한 URL을 입력해주세요.";
-      }
-    } catch {
-      return "올바른 URL 형식이 아닙니다.";
-    }
+  const trimmed = referenceUrl.trim();
+  if (!trimmed) return undefined;
+
+  if (trimmed.length > REFERENCE_URL_MAX_LENGTH) {
+    return `URL은 ${REFERENCE_URL_MAX_LENGTH}자 이내로 입력해주세요.`;
   }
+
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return "http:// 또는 https://로 시작하는 유효한 URL을 입력해주세요.";
+    }
+  } catch {
+    return "올바른 URL 형식이 아닙니다.";
+  }
+  return undefined;
+}
+
+function validateReferenceTitle(referenceTitle: string): string | undefined {
+  const trimmed = referenceTitle.trim();
+  if (!trimmed) return undefined;
+
+  if (trimmed.length > REFERENCE_TITLE_MAX_LENGTH) {
+    return `출처 제목은 ${REFERENCE_TITLE_MAX_LENGTH}자 이내로 입력해주세요.`;
+  }
+
   return undefined;
 }
 
 export function getReferenceUrlError(referenceUrl: string): string | undefined {
   return validateReferenceUrl(referenceUrl);
+}
+
+export function getReferenceTitleError(
+  referenceTitle: string,
+): string | undefined {
+  return validateReferenceTitle(referenceTitle);
 }
 
 export function validateAddEpigramFieldOnBlur(
@@ -77,9 +107,11 @@ export function validateAddEpigramFieldOnBlur(
       if (!values.authorName.trim()) return "저자 이름을 입력해주세요.";
       return undefined;
     case "referenceTitle":
-      return undefined;
+      return getReferenceTitleError(values.referenceTitle);
     case "referenceUrl":
       return getReferenceUrlError(values.referenceUrl);
+    case "tags":
+      return getTagsError(values.tags);
     default:
       return undefined;
   }
@@ -102,9 +134,19 @@ export function validateAddEpigramForm(
     errors.authorName = "본인 정보를 불러오지 못했습니다. 다시 로그인해주세요.";
   }
 
+  const referenceTitleError = validateReferenceTitle(values.referenceTitle);
+  if (referenceTitleError) {
+    errors.referenceTitle = referenceTitleError;
+  }
+
   const referenceUrlError = validateReferenceUrl(values.referenceUrl);
   if (referenceUrlError) {
     errors.referenceUrl = referenceUrlError;
+  }
+
+  const tagsError = getTagsError(values.tags);
+  if (tagsError) {
+    errors.tags = tagsError;
   }
 
   return errors;
