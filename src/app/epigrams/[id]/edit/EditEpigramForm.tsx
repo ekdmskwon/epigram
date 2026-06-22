@@ -226,6 +226,7 @@ export default function EditEpigramForm({ epigramId }: EditEpigramFormProps) {
       );
 
       router.push(`/epigrams/${epigramId}`);
+      router.refresh();
     } catch (error) {
       setSubmitError(getEpigramSubmitErrorMessage(error));
     } finally {

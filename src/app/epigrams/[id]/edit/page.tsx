@@ -6,7 +6,9 @@ type EditEpigramPageProps = {
   params: Promise<{ id: string }>;
 };
 
-export default async function EditEpigramPage({ params }: EditEpigramPageProps) {
+export default async function EditEpigramPage({
+  params,
+}: EditEpigramPageProps) {
   const { id } = await params;
   const epigramId = Number(id);
 

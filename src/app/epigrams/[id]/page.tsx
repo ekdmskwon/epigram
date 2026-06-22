@@ -31,12 +31,15 @@ export default async function EpigramDetailPage({
     notFound();
   }
 
+  if (!epigram) notFound();
+
   return (
     <S.Page>
       <AuthHeader />
       <S.EpigramHeroBackground aria-hidden />
       <S.Main>
         <EpigramDetailView
+          key={epigramId}
           epigramId={epigramId}
           initialEpigram={epigram}
           initialComments={initialComments}

@@ -18,7 +18,7 @@ import {
   updateComment,
   type CommentItem,
 } from "@/api/comment";
-import { getUserById, getUserMe } from "@/api/user";
+import { getUserById } from "@/api/user";
 import { useAuth } from "@/contexts/AuthContext";
 import { useComments } from "@/hooks/useComments";
 import { COMMENT_PAGE_SIZE, COMMENT_MAX_LENGTH, EPIGRAM_PAPER_MIN_HEIGHT } from "@/lib/epigram-detail";
@@ -67,29 +67,10 @@ export default function EpigramDetailView({
     removeCommentFromList,
   } = useComments(epigramId, COMMENT_PAGE_SIZE, initialComments);
 
-  const [resolvedUserId, setResolvedUserId] = useState<number | null>(userId);
-
   const isOwner =
     isLoggedIn &&
-    resolvedUserId !== null &&
-    epigram.writerId === resolvedUserId;
-
-  useEffect(() => {
-    setResolvedUserId(userId);
-  }, [userId]);
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      setResolvedUserId(null);
-      return;
-    }
-
-    if (userId !== null) return;
-
-    getUserMe()
-      .then((user) => setResolvedUserId(user.id))
-      .catch(() => setResolvedUserId(null));
-  }, [isLoggedIn, userId]);
+    userId !== null &&
+    epigram.writerId === userId;
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -109,9 +90,11 @@ export default function EpigramDetailView({
 
   useEffect(() => {
     if (!isLoggedIn) return;
+    let cancelled = false;
     getEpigramDetail(epigramId)
-      .then(setEpigram)
+      .then((data) => { if (!cancelled) setEpigram(data); })
       .catch(() => {});
+    return () => { cancelled = true; };
   }, [epigramId, isLoggedIn]);
 
   useEffect(() => {
@@ -151,6 +134,7 @@ export default function EpigramDetailView({
     try {
       await deleteEpigram(epigramId);
       router.push("/epigramlist");
+      router.refresh();
     } catch {
       setShareMessage("에피그램 삭제에 실패했습니다.");
       setTimeout(() => setShareMessage(""), 2000);
@@ -297,63 +281,63 @@ export default function EpigramDetailView({
             )}
           </EpigramTopRow>
 
-        <EpigramBody>
-          <EpigramContent>{epigram.content}</EpigramContent>
-          <EpigramAuthor>- {epigram.author} -</EpigramAuthor>
-        </EpigramBody>
+          <EpigramBody>
+            <EpigramContent>{epigram.content}</EpigramContent>
+            <EpigramAuthor>- {epigram.author} -</EpigramAuthor>
+          </EpigramBody>
 
-        <ActionRow>
-          <LikeButton
-            type="button"
-            onClick={handleToggleLike}
-            disabled={!isLoggedIn || isLikeLoading}
-            $active={epigram.isLiked}
-            aria-pressed={epigram.isLiked}
-          >
-            <Image
-              src="/icons/button-like.svg"
-              alt=""
-              width={28}
-              height={26}
-              aria-hidden
-            />
-            {epigram.likeCount}
-          </LikeButton>
-          {(epigram.referenceTitle || epigram.referenceUrl) &&
-            (epigram.referenceUrl ? (
-              <SourceLink
-                href={epigram.referenceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="출처 새 창에서 열기"
-              >
-                <SourceLabel>
-                  {epigram.referenceTitle ?? epigram.referenceUrl}
-                </SourceLabel>
-                <Image
-                  src="/icons/button-external.svg"
-                  alt=""
-                  width={20}
-                  height={20}
-                  aria-hidden
-                />
-              </SourceLink>
-            ) : (
-              <SourceButton aria-label="출처">
-                <SourceLabel>
-                  {epigram.referenceTitle ?? epigram.referenceUrl}
-                </SourceLabel>
-                <Image
-                  src="/icons/button-external.svg"
-                  alt=""
-                  width={20}
-                  height={20}
-                  aria-hidden
-                />
-              </SourceButton>
-            ))}
-        </ActionRow>
-        {shareMessage && <Toast role="status">{shareMessage}</Toast>}
+          <ActionRow>
+            <LikeButton
+              type="button"
+              onClick={handleToggleLike}
+              disabled={!isLoggedIn || isLikeLoading}
+              $active={epigram.isLiked}
+              aria-pressed={epigram.isLiked}
+            >
+              <Image
+                src="/icons/button-like.svg"
+                alt=""
+                width={28}
+                height={26}
+                aria-hidden
+              />
+              {epigram.likeCount}
+            </LikeButton>
+            {(epigram.referenceTitle || epigram.referenceUrl) &&
+              (epigram.referenceUrl ? (
+                <SourceLink
+                  href={epigram.referenceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="출처 새 창에서 열기"
+                >
+                  <SourceLabel>
+                    {epigram.referenceTitle ?? epigram.referenceUrl}
+                  </SourceLabel>
+                  <Image
+                    src="/icons/button-external.svg"
+                    alt=""
+                    width={20}
+                    height={20}
+                    aria-hidden
+                  />
+                </SourceLink>
+              ) : (
+                <SourceButton aria-label="출처">
+                  <SourceLabel>
+                    {epigram.referenceTitle ?? epigram.referenceUrl}
+                  </SourceLabel>
+                  <Image
+                    src="/icons/button-external.svg"
+                    alt=""
+                    width={20}
+                    height={20}
+                    aria-hidden
+                  />
+                </SourceButton>
+              ))}
+          </ActionRow>
+          {shareMessage && <Toast role="status">{shareMessage}</Toast>}
         </EpigramPaper>
       </EpigramSection>
 
@@ -411,7 +395,7 @@ export default function EpigramDetailView({
             const isEditing = editingCommentId === comment.id;
 
             return (
-              <CommentItem key={comment.id}>
+              <CommentListItem key={comment.id}>
                 <CommentRow>
                   <AvatarButton
                     type="button"
@@ -474,7 +458,7 @@ export default function EpigramDetailView({
                     )}
                   </CommentContent>
                 </CommentRow>
-              </CommentItem>
+              </CommentListItem>
             );
           })}
         </CommentList>
@@ -724,13 +708,15 @@ const LikeButton = styled.button<{ $active: boolean }>`
   padding: 0 16px;
   border: none;
   border-radius: 999px;
-  background-color: ${({ theme }) => theme.colors.black600};
+  background-color: ${({ theme, $active }) =>
+    $active ? theme.colors.blue600 : theme.colors.black600};
   font-family: ${({ theme }) => theme.fonts.main};
   font-size: ${({ theme }) => theme.fontSizes.main.textXl.size};
   line-height: ${({ theme }) => theme.fontSizes.main.textXl.lineHeight};
   font-weight: 600;
   color: #ffffff;
   cursor: pointer;
+  transition: background-color 0.15s ease;
 
   img {
     filter: brightness(0) invert(1);
@@ -920,7 +906,7 @@ const CommentList = styled.div`
   flex-direction: column;
 `;
 
-const CommentItem = styled.article`
+const CommentListItem = styled.article`
   padding: 24px 0;
 
   &:not(:last-child) {
