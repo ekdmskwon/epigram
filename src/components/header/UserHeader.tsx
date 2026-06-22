@@ -44,11 +44,7 @@ const UserHeader = ({ userName, profileImageUrl }: UserHeaderProps) => {
             </S.MenuLinks>
           </S.LeftSection>
 
-          <Link
-            href="/settings"
-            style={{ textDecoration: "none" }}
-            onClick={closeMenu}
-          >
+          <S.NavLink href="/settings" onClick={closeMenu}>
             <S.UserLinkBox>
               <S.ProfileImageWrapper>
                 <Image
@@ -67,7 +63,7 @@ const UserHeader = ({ userName, profileImageUrl }: UserHeaderProps) => {
               </S.ProfileImageWrapper>
               <S.UserName>{userName}</S.UserName>
             </S.UserLinkBox>
-          </Link>
+          </S.NavLink>
         </S.InnerContainer>
       </S.HeaderBase>
 

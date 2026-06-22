@@ -8,18 +8,13 @@ export const HeroWrapper = styled.div`
   position: relative;
   width: 100%;
   height: ${HERO_HEIGHT}px;
-  background-image: url("/icons/landing-background.png");
-  background-repeat: no-repeat;
-  background-position: top center;
-  background-size: ${HERO_BG_WIDTH}px ${HERO_HEIGHT}px;
   background-color: #f8f9fa;
-
-  @media (max-width: ${HERO_BG_WIDTH}px) {
-    background-size: 100% ${HERO_HEIGHT}px;
-  }
+  overflow: hidden;
 `;
 
 export const HeroSection = styled.section`
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -154,18 +149,8 @@ export const FeatureCenterInner = styled.div`
   }
 `;
 
-export const FeatureCenterHeading = styled.h2`
-  font-family: ${({ theme }) => theme.fonts.point};
-  font-size: 24px;
-  line-height: 1.5;
-  font-weight: 400;
-  color: ${({ theme }) => theme.colors.black950};
+export const FeatureCenterHeading = styled(FeatureHeading)`
   text-align: center;
-
-  @media (min-width: 768px) {
-    font-size: ${({ theme }) => theme.fontSizes.point.text3xl.size};
-    line-height: ${({ theme }) => theme.fontSizes.point.text3xl.lineHeight};
-  }
 `;
 
 export const FeatureCenterImageBox = styled.div`

@@ -40,11 +40,11 @@ const LandingHeader = () => {
             </S.MenuLinks>
           </S.LeftSection>
 
-          <Link href="/login" style={{ textDecoration: "none" }} onClick={closeMenu}>
+          <S.NavLink href="/login" onClick={closeMenu}>
             <S.UserLinkBox>
               <S.UserName>로그인</S.UserName>
             </S.UserLinkBox>
-          </Link>
+          </S.NavLink>
         </S.InnerContainer>
       </S.HeaderBase>
 

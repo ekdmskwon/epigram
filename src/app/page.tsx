@@ -8,6 +8,13 @@ export default function HomePage() {
   return (
     <>
       <S.HeroWrapper>
+        <Image
+          src="/icons/landing-background.png"
+          alt=""
+          fill
+          priority
+          style={{ objectFit: "cover", objectPosition: "top center", zIndex: 0 }}
+        />
         <LandingHeader />
         <S.HeroSection>
           <S.HeroHeading>
