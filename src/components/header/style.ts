@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styled from "styled-components";
 
 export const HEADER_HEIGHT = 80;
@@ -135,6 +136,10 @@ export const MobileMenuPanel = styled.div<{ $open: boolean }>`
     color: ${({ theme }) => theme.colors.black100};
     text-decoration: none;
   }
+`;
+
+export const NavLink = styled(Link)`
+  text-decoration: none;
 `;
 
 export const UserLinkBox = styled.div`

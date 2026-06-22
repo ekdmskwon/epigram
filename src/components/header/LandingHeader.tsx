@@ -3,13 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { UserHeaderProps } from "./type";
 import * as S from "./style";
 
-const UserHeader = ({ userName, profileImageUrl }: UserHeaderProps) => {
+const LandingHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const avatarSrc = profileImageUrl || "/icons/default-avatar.svg";
-
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
@@ -40,28 +37,12 @@ const UserHeader = ({ userName, profileImageUrl }: UserHeaderProps) => {
 
             <S.MenuLinks>
               <Link href="/epigramlist">피드</Link>
-              <Link href="/search">검색</Link>
             </S.MenuLinks>
           </S.LeftSection>
 
-          <S.NavLink href="/settings" onClick={closeMenu}>
+          <S.NavLink href="/login" onClick={closeMenu}>
             <S.UserLinkBox>
-              <S.ProfileImageWrapper>
-                <Image
-                  src={avatarSrc}
-                  alt={
-                    profileImageUrl
-                      ? `${userName}님의 프로필`
-                      : "기본 아바타"
-                  }
-                  fill
-                  sizes="32px"
-                  style={{
-                    objectFit: profileImageUrl ? "cover" : "contain",
-                  }}
-                />
-              </S.ProfileImageWrapper>
-              <S.UserName>{userName}</S.UserName>
+              <S.UserName>로그인</S.UserName>
             </S.UserLinkBox>
           </S.NavLink>
         </S.InnerContainer>
@@ -71,12 +52,12 @@ const UserHeader = ({ userName, profileImageUrl }: UserHeaderProps) => {
         <Link href="/epigramlist" onClick={closeMenu}>
           피드
         </Link>
-        <Link href="/search" onClick={closeMenu}>
-          검색
+        <Link href="/login" onClick={closeMenu}>
+          로그인
         </Link>
       </S.MobileMenuPanel>
     </>
   );
 };
 
-export default UserHeader;
+export default LandingHeader;
