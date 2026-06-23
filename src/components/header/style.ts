@@ -146,14 +146,8 @@ export const UserLinkBox = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  cursor: pointer;
   padding: 6px 12px;
   border-radius: 20px;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-  }
 `;
 
 export const UserName = styled.span`

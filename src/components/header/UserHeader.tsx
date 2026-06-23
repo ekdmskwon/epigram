@@ -40,39 +40,33 @@ const UserHeader = ({ userName, profileImageUrl }: UserHeaderProps) => {
 
             <S.MenuLinks>
               <Link href="/epigramlist">피드</Link>
-              <Link href="/search">검색</Link>
             </S.MenuLinks>
           </S.LeftSection>
 
-          <S.NavLink href="/settings" onClick={closeMenu}>
-            <S.UserLinkBox>
-              <S.ProfileImageWrapper>
-                <Image
-                  src={avatarSrc}
-                  alt={
-                    profileImageUrl
-                      ? `${userName}님의 프로필`
-                      : "기본 아바타"
-                  }
-                  fill
-                  sizes="32px"
-                  style={{
-                    objectFit: profileImageUrl ? "cover" : "contain",
-                  }}
-                />
-              </S.ProfileImageWrapper>
-              <S.UserName>{userName}</S.UserName>
-            </S.UserLinkBox>
-          </S.NavLink>
+          <S.UserLinkBox>
+            <S.ProfileImageWrapper>
+              <Image
+                src={avatarSrc}
+                alt={
+                  profileImageUrl
+                    ? `${userName}님의 프로필`
+                    : "기본 아바타"
+                }
+                fill
+                sizes="32px"
+                style={{
+                  objectFit: profileImageUrl ? "cover" : "contain",
+                }}
+              />
+            </S.ProfileImageWrapper>
+            <S.UserName>{userName}</S.UserName>
+          </S.UserLinkBox>
         </S.InnerContainer>
       </S.HeaderBase>
 
       <S.MobileMenuPanel $open={isMenuOpen} aria-hidden={!isMenuOpen}>
         <Link href="/epigramlist" onClick={closeMenu}>
           피드
-        </Link>
-        <Link href="/search" onClick={closeMenu}>
-          검색
         </Link>
       </S.MobileMenuPanel>
     </>

@@ -35,6 +35,7 @@ export default function EpigramDetailView({
   const { isLoggedIn, userId, profileImageUrl } = useAuth();
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const menuWrapperRef = useRef<HTMLDivElement | null>(null);
+  const isLikePendingRef = useRef(false);
 
   const [epigram, setEpigram] = useState<EpigramDetailResponse>(initialEpigram);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -114,17 +115,30 @@ export default function EpigramDetailView({
   }, [loadMore, nextCursor]);
 
   const handleToggleLike = async () => {
-    if (!isLoggedIn || isLikeLoading) return;
+    if (!isLoggedIn || isLikePendingRef.current) return;
+    isLikePendingRef.current = true;
+
+    const prevEpigram = epigram;
+    const wasLiked = epigram.isLiked;
+
+    setEpigram((prev) => ({
+      ...prev,
+      isLiked: !prev.isLiked,
+      likeCount: prev.isLiked ? prev.likeCount - 1 : prev.likeCount + 1,
+    }));
     setIsLikeLoading(true);
+
     try {
-      const updated = epigram.isLiked
+      const updated = wasLiked
         ? await cancelEpigramLike(epigramId)
         : await toggleEpigramLike(epigramId);
       setEpigram(updated);
     } catch {
+      setEpigram(prevEpigram);
       setShareMessage("좋아요 처리에 실패했습니다.");
       setTimeout(() => setShareMessage(""), 2000);
     } finally {
+      isLikePendingRef.current = false;
       setIsLikeLoading(false);
     }
   };
