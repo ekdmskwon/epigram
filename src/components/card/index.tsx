@@ -32,7 +32,7 @@ const shimmer = keyframes`
 const cardTypography = css`
   font-family: ${({ theme }) => theme.fonts.point};
   font-size: ${({ theme }) => theme.fontSizes.point.textXl.size};
-  line-height: 40px;
+  line-height: ${({ theme }) => theme.fontSizes.point.text2xl.lineHeight};
   font-weight: 500;
 `;
 
